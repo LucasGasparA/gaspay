@@ -1,0 +1,19 @@
+{
+  "name": "financas",
+  "private": true,
+  "version": "0.0.0",
+  "packageManager": "pnpm@10.34.5",
+  "engines": {
+    "node": ">=22"
+  },
+  "scripts": {
+    "build": "pnpm -r --filter @financas/shared --filter @financas/api build",
+    "typecheck": "pnpm -r typecheck",
+    "test": "pnpm -r test",
+    "api": "pnpm --filter @financas/api dev",
+    "mobile": "pnpm --filter @financas/mobile start"
+  },
+  "devDependencies": {
+    "typescript": "^5.9.3"
+  }
+}

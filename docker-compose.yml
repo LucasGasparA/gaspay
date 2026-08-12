@@ -1,0 +1,41 @@
+services:
+  postgres:
+    image: postgres:16-alpine
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: financas
+      POSTGRES_PASSWORD: financas
+      POSTGRES_DB: financas
+    ports:
+      - '5432:5432'
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ['CMD-SHELL', 'pg_isready -U financas -d financas']
+      interval: 5s
+      timeout: 3s
+      retries: 10
+
+  api:
+    build:
+      context: .
+      dockerfile: apps/api/Dockerfile
+    restart: unless-stopped
+    depends_on:
+      postgres:
+        condition: service_healthy
+    env_file:
+      - apps/api/.env
+    environment:
+      # Sobrescreve o que estiver no .env: dentro da rede do compose o
+      # Postgres se chama `postgres`, não `localhost`.
+      DATABASE_URL: postgresql://financas:financas@postgres:5432/financas
+      # A imagem é a de produção (devDependencies podados, sem pino-pretty) —
+      # se o .env disser NODE_ENV=development aqui, o logger tenta carregar um
+      # transport que não existe na imagem e o processo morre no boot.
+      NODE_ENV: production
+    ports:
+      - '3000:3000'
+
+volumes:
+  postgres_data:

@@ -1,0 +1,14 @@
+**/node_modules
+**/dist
+**/.expo
+**/.expo-shared
+**/android
+**/ios
+**/*.tsbuildinfo
+.git
+.gitignore
+apps/mobile
+*.md
+.env
+.env.*
+!.env.example

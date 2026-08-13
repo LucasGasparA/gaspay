@@ -3,6 +3,7 @@ import { useRouter } from 'expo-router';
 import { useState } from 'react';
 import { Pressable, ScrollView, StyleSheet, Text, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
+import { Avatar } from '../../components/Avatar';
 import { EditNameModal } from '../../components/EditNameModal';
 import { SettingRow } from '../../components/SettingRow';
 import { SettingsGroup } from '../../components/SettingsGroup';
@@ -11,13 +12,6 @@ import { signOut } from '../../lib/auth-client';
 import { useTheme } from '../../lib/theme-context';
 
 const { colors, space, radius, typography } = lightTheme;
-
-function initials(name: string): string {
-  const parts = name.trim().split(/\s+/);
-  const first = parts[0]?.charAt(0) ?? '';
-  const last = parts.length > 1 ? (parts[parts.length - 1]?.charAt(0) ?? '') : '';
-  return (first + last).toUpperCase();
-}
 
 export default function Profile() {
   const insets = useSafeAreaInsets();
@@ -41,9 +35,7 @@ export default function Profile() {
       <Text style={styles.title}>Perfil</Text>
 
       <View style={styles.profileCard}>
-        <View style={styles.avatar}>
-          <Text style={styles.avatarLabel}>{me ? initials(me.user.name) : ''}</Text>
-        </View>
+        <Avatar name={me?.user.name ?? ''} imageUrl={me?.user.image} size={56} />
         <View style={styles.profileInfo}>
           <Text style={styles.name}>{me?.user.name ?? '...'}</Text>
           <Text style={styles.email}>{me?.user.email ?? ''}</Text>
@@ -119,15 +111,6 @@ const styles = StyleSheet.create({
     padding: space.md,
     marginBottom: space.lg,
   },
-  avatar: {
-    width: 56,
-    height: 56,
-    borderRadius: radius.pill,
-    backgroundColor: colors.brandSubtle,
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  avatarLabel: { color: colors.brand, fontWeight: typography.weight.semibold, fontSize: typography.size.title },
   profileInfo: { flex: 1, minWidth: 0 },
   name: { fontSize: 17, fontWeight: typography.weight.semibold, color: colors.text },
   email: { fontSize: typography.size.footnote, color: colors.textSecondary, marginTop: 2 },

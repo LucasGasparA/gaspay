@@ -4,6 +4,7 @@ import { useRouter } from 'expo-router';
 import { useMemo, useState } from 'react';
 import { ActivityIndicator, Pressable, RefreshControl, ScrollView, StyleSheet, Text, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
+import { Avatar } from '../../components/Avatar';
 import { EmptyState } from '../../components/EmptyState';
 import { Fab } from '../../components/Fab';
 import { FlowChart } from '../../components/FlowChart';
@@ -14,6 +15,7 @@ import { useMonthlyFlow } from '../../hooks/use-analytics';
 import { useBudgets } from '../../hooks/use-budgets';
 import { useMe } from '../../hooks/use-me';
 import { useMonthSummary, useRecentTransactions } from '../../hooks/use-transactions';
+import { useScrollActivityHandler } from '../../lib/scroll-activity-context';
 import { useTheme } from '../../lib/theme-context';
 
 const WEEKDAYS_FULL = [
@@ -39,19 +41,13 @@ function todayLabel(): string {
   return `${weekdayCapitalized}, ${now.getDate()} de ${month}`;
 }
 
-function initials(name: string): string {
-  const parts = name.trim().split(/\s+/);
-  const first = parts[0]?.charAt(0) ?? '';
-  const last = parts.length > 1 ? (parts[parts.length - 1]?.charAt(0) ?? '') : '';
-  return (first + last).toUpperCase();
-}
-
 export default function Home() {
   const insets = useSafeAreaInsets();
   const router = useRouter();
   const { theme } = useTheme();
   const { colors, space, radius, typography } = theme;
   const { data: me } = useMe();
+  const scrollActivity = useScrollActivityHandler();
   const {
     data: accountsData,
     isLoading: accountsLoading,
@@ -108,6 +104,7 @@ export default function Home() {
           { paddingHorizontal: space.lg, paddingBottom: space.xl, gap: space.xl, paddingTop: insets.top + space.md },
         ]}
         refreshControl={<RefreshControl refreshing={accountsRefetching} onRefresh={handleRefresh} />}
+        {...scrollActivity}
       >
       <View style={styles.greetingRow}>
         <View>
@@ -116,11 +113,14 @@ export default function Home() {
           </Text>
           <Text style={[styles.date, { color: colors.textSecondary }]}>{todayLabel()}</Text>
         </View>
-        <View style={[styles.avatar, { borderRadius: radius.pill, backgroundColor: colors.brandSubtle }]}>
-          <Text style={[styles.avatarLabel, { color: colors.brand, fontWeight: typography.weight.semibold }]}>
-            {me ? initials(me.user.name) : ''}
-          </Text>
-        </View>
+        <Pressable
+          onPress={() => router.push('/profile')}
+          accessibilityRole="button"
+          accessibilityLabel="Abrir perfil e configurações"
+          hitSlop={8}
+        >
+          <Avatar name={me?.user.name ?? ''} imageUrl={me?.user.image} size={40} theme={theme} />
+        </Pressable>
       </View>
 
       {isLoading ? (
@@ -286,8 +286,6 @@ const styles = StyleSheet.create({
   greetingRow: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' },
   greeting: { fontSize: 24 },
   date: { fontSize: 13, marginTop: 2 },
-  avatar: { width: 40, height: 40, alignItems: 'center', justifyContent: 'center' },
-  avatarLabel: { fontSize: 15 },
   balanceLabel: { fontSize: 13 },
   balanceRow: { flexDirection: 'row', alignItems: 'center', gap: 8, marginTop: 4 },
   balanceValue: { fontSize: 36, fontVariant: ['tabular-nums'] },

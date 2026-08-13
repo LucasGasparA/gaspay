@@ -6,6 +6,7 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { Badge } from '../../components/Badge';
 import { EmptyState } from '../../components/EmptyState';
 import { useAccounts } from '../../hooks/use-accounts';
+import { useScrollActivityHandler } from '../../lib/scroll-activity-context';
 
 const { colors, space, radius, typography } = lightTheme;
 
@@ -28,6 +29,7 @@ function AccountRow({ account, isLast }: { account: AccountDTO; isLast: boolean 
 export default function Accounts() {
   const insets = useSafeAreaInsets();
   const router = useRouter();
+  const scrollActivity = useScrollActivityHandler();
   const { data, isLoading } = useAccounts();
   const accounts = data?.items ?? [];
   const hasAccounts = accounts.length > 0;
@@ -38,6 +40,7 @@ export default function Accounts() {
     <ScrollView
       style={styles.container}
       contentContainerStyle={[styles.content, { paddingTop: insets.top + space.md }]}
+      {...scrollActivity}
     >
       <Text style={styles.title}>Contas</Text>
 

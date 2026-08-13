@@ -1,5 +1,5 @@
 {
-  "name": "financas",
+  "name": "dindim",
   "private": true,
   "version": "0.0.0",
   "packageManager": "pnpm@10.34.5",
@@ -7,11 +7,11 @@
     "node": ">=22"
   },
   "scripts": {
-    "build": "pnpm -r --filter @financas/shared --filter @financas/api build",
+    "build": "pnpm -r --filter @dindim/shared --filter @dindim/api build",
     "typecheck": "pnpm -r typecheck",
     "test": "pnpm -r test",
-    "api": "pnpm --filter @financas/api dev",
-    "mobile": "pnpm --filter @financas/mobile start",
+    "api": "pnpm --filter @dindim/api dev",
+    "mobile": "pnpm --filter @dindim/mobile start",
     "postinstall": "node scripts/patch-native-cmake.mjs"
   },
   "devDependencies": {

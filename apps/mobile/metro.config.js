@@ -6,7 +6,7 @@ const monorepoRoot = path.resolve(projectRoot, '../..');
 
 const config = getDefaultConfig(projectRoot);
 
-// Metro por padrão só observa o próprio pacote. `@financas/shared` vive fora
+// Metro por padrão só observa o próprio pacote. `@dindim/shared` vive fora
 // dele, então precisa entrar no watch — senão o Metro nem sabe que o arquivo
 // existe quando o import é resolvido.
 config.watchFolders = [monorepoRoot];

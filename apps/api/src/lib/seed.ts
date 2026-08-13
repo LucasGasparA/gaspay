@@ -1,4 +1,4 @@
-import { defaultCategories } from '@financas/shared';
+import { defaultCategories } from '@dindim/shared';
 import { eq, sql } from 'drizzle-orm';
 import type { Database } from '../db/index.js';
 import { categories } from '../db/schema.js';

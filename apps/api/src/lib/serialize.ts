@@ -1,4 +1,4 @@
-import type { AccountDTO, BudgetDTO, CategoryDTO, GoalDTO, TransactionDTO } from '@financas/shared';
+import type { AccountDTO, BudgetDTO, CategoryDTO, GoalDTO, TransactionDTO } from '@dindim/shared';
 import type { AccountRow, BudgetRow, CategoryRow, GoalRow, TransactionRow } from '../db/schema.js';
 
 /**
@@ -73,10 +73,16 @@ export function serializeTransaction(
   };
 }
 
-export function serializeBudget(row: BudgetRow, spentCents: bigint | string): BudgetDTO {
+export function serializeBudget(
+  row: BudgetRow,
+  category: { name: string; color: string },
+  spentCents: bigint | string,
+): BudgetDTO {
   return {
     id: row.id,
     categoryId: row.categoryId,
+    categoryName: category.name,
+    categoryColor: category.color,
     month: row.month,
     limitCents: cents(row.limitCents),
     spentCents: cents(spentCents),

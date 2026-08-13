@@ -1,7 +1,12 @@
-export const purple = {
-  50: '#F6EDFD', 100: '#E9D6FA', 200: '#D0AAF4', 300: '#B77EED',
-  400: '#9E52E6', 500: '#820AD1', 600: '#6E09B0', 700: '#5A078F',
-  800: '#46066F', 900: '#2E0449',
+/**
+ * Âmbar dourado — trocou o roxo original porque colidia com o Nubank. Não é
+ * uma rampa numérica como as outras porque `brandPressed` (o texto sobre
+ * âmbar em botão escuro) não fica ao longo do mesmo matiz, é um marrom
+ * escuro deliberado — ver `design_handoff_dindim/README.md`.
+ */
+export const amber = {
+  light: { brand: '#B8860B', brandPressed: '#5A4A1F', brandSubtle: '#FBF2DC', onBrand: '#FFFFFF' },
+  dark: { brand: '#D9A441', brandPressed: '#C4903A', brandSubtle: '#3A2F16', onBrand: '#121212' },
 } as const;
 
 export const neutral = {
@@ -20,8 +25,8 @@ export const semantic = {
  * Deliberadamente curta: cor aqui é etiqueta, não decoração.
  */
 export const accentPalette = [
-  '#820AD1', '#00A868', '#F5A623', '#E24141', '#0A84D1',
-  '#D10A8E', '#4A4A9E', '#0AB5B5', '#8E6B3F', '#5A078F',
+  '#B8860B', '#00A868', '#F5A623', '#E24141', '#0A84D1',
+  '#D10A8E', '#4A4A9E', '#0AB5B5', '#8E6B3F', '#5A4A1F',
 ] as const;
 
 export type AccentColor = (typeof accentPalette)[number];

@@ -57,6 +57,11 @@ const patches = [
     from: 'target_link_libraries(\n  ${LIB_TARGET_NAME}\n  ReactAndroid::reactnative\n  ReactAndroid::jsi\n  fbjni::fbjni\n)',
     to: 'target_link_libraries(\n  ${LIB_TARGET_NAME}\n  ReactAndroid::reactnative\n  ReactAndroid::jsi\n  fbjni::fbjni\n  c++_shared\n)',
   },
+  {
+    file: 'node_modules/react-native-svg/android/src/main/jni/CMakeLists.txt',
+    from: 'target_link_libraries(\n  react_codegen_rnsvg\n  fbjni\n)',
+    to: 'target_link_libraries(\n  react_codegen_rnsvg\n  fbjni\n  c++_shared\n)',
+  },
 ];
 
 for (const { file, from, to } of patches) {

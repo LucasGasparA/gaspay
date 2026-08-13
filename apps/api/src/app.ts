@@ -7,7 +7,10 @@ import { onError, onNotFound } from './middleware/error.js';
 import { rateLimit } from './middleware/rate-limit.js';
 import { requestContext } from './middleware/request-context.js';
 import { accountRoutes } from './routes/accounts.js';
+import { analyticsRoutes } from './routes/analytics.js';
+import { budgetRoutes } from './routes/budgets.js';
 import { categoryRoutes } from './routes/categories.js';
+import { goalRoutes } from './routes/goals.js';
 import { healthRoutes } from './routes/health.js';
 import { meRoutes } from './routes/me.js';
 import { transactionRoutes } from './routes/transactions.js';
@@ -48,6 +51,9 @@ export function createApp() {
   app.route('/api/accounts', accountRoutes);
   app.route('/api/categories', categoryRoutes);
   app.route('/api/transactions', transactionRoutes);
+  app.route('/api/budgets', budgetRoutes);
+  app.route('/api/goals', goalRoutes);
+  app.route('/api/analytics', analyticsRoutes);
 
   return app;
 }

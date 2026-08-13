@@ -1,4 +1,4 @@
-import { neutral, purple, semantic } from './palette.js';
+import { amber, neutral, semantic } from './palette.js';
 
 export const radius = { sm: 8, md: 16, lg: 24, pill: 999 } as const;
 export const space = { xs: 4, sm: 8, md: 16, lg: 24, xl: 32 } as const;
@@ -26,8 +26,8 @@ export const typography = {
     callout: 17,
     title: 20,
     heading: 24,
-    display: 32,
-    hero: 40,
+    display: 28,
+    hero: 30,
   },
   weight: {
     regular: '400',
@@ -53,11 +53,11 @@ export const duration = { fast: 140, base: 220, slow: 320 } as const;
 
 export const lightTheme = {
   colors: {
-    // O roxo ocupa ~15% da tela: header, FAB, estado ativo, barra de progresso.
-    brand: purple[500],
-    brandPressed: purple[600],
-    brandSubtle: purple[50],
-    onBrand: neutral[0],
+    // O âmbar ocupa ~15% da tela: header, FAB, estado ativo, barra de progresso.
+    brand: amber.light.brand,
+    brandPressed: amber.light.brandPressed,
+    brandSubtle: amber.light.brandSubtle,
+    onBrand: amber.light.onBrand,
 
     background: neutral[50],
     surface: neutral[0],
@@ -87,34 +87,44 @@ export const lightTheme = {
 } as const;
 
 /**
- * Modo escuro só entra depois da Fase 3, mas os tokens já ficam prontos:
- * `#820AD1` sobre preto dá 2.9:1 e reprova em acessibilidade, então o roxo
- * sobe para `purple[300]`.
+ * Modo escuro — tokens exatos de `design_handoff_dindim/dindim-theme.ts`.
+ * Hoje só a Home tem versão dark implementada no protótipo; as demais telas
+ * herdam os mesmos tokens quando forem portadas.
  */
 export const darkTheme = {
   ...lightTheme,
   colors: {
     ...lightTheme.colors,
-    brand: purple[300],
-    brandPressed: purple[200],
-    brandSubtle: purple[900],
-    onBrand: neutral[900],
+    brand: amber.dark.brand,
+    brandPressed: amber.dark.brandPressed,
+    brandSubtle: amber.dark.brandSubtle,
+    onBrand: amber.dark.onBrand,
 
     background: '#121212',
-    surface: '#1C1C1E',
+    surface: '#1C1C1C',
     surfaceSunken: '#121212',
-    border: '#2A2A2E',
-    divider: '#2A2A2E',
+    border: '#2E2E2E',
+    divider: '#2E2E2E',
 
-    text: neutral[0],
-    textSecondary: neutral[300],
-    textTertiary: neutral[500],
+    text: '#F2F2F2',
+    textSecondary: '#A5A5A5',
+    textTertiary: '#6E6E6E',
     onSurfaceInverted: neutral[900],
 
-    expense: neutral[0],
-    skeleton: '#2A2A2E',
+    income: '#2FCB84',
+    expense: '#F2F2F2',
+    danger: '#FF6B6B',
+    skeleton: '#2E2E2E',
     scrim: 'rgba(0,0,0,0.6)',
   },
 } as const;
 
-export type AppTheme = typeof lightTheme;
+/**
+ * `lightTheme`/`darkTheme` são `as const`, então cada cor tem um tipo literal
+ * próprio (`"#B8860B"` etc.) — sem isso, `darkTheme` não é atribuível a um
+ * `AppTheme` inferido de `lightTheme` (os hex divergem). `colors` é alargado
+ * para `string`; o resto (radius/space/typography) é idêntico nos dois temas.
+ */
+export type AppTheme = Omit<typeof lightTheme, 'colors'> & {
+  colors: Record<keyof typeof lightTheme.colors, string>;
+};

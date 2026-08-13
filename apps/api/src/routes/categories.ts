@@ -3,7 +3,7 @@ import {
   idParamSchema,
   listCategoriesQuerySchema,
   updateCategorySchema,
-} from '@financas/shared';
+} from '@dindim/shared';
 import { and, asc, eq } from 'drizzle-orm';
 import { Hono } from 'hono';
 import { HTTPException } from 'hono/http-exception';

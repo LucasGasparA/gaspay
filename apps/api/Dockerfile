@@ -1,5 +1,5 @@
 # Build de dentro do monorepo (contexto = raiz do repo, não apps/api) porque
-# a API depende de @financas/shared via workspace:*.
+# a API depende de @dindim/shared via workspace:*.
 
 FROM node:22-bookworm-slim AS base
 RUN corepack enable
@@ -7,6 +7,7 @@ WORKDIR /app
 
 FROM base AS deps
 COPY package.json pnpm-lock.yaml pnpm-workspace.yaml .npmrc tsconfig.base.json ./
+COPY scripts ./scripts
 COPY packages/shared/package.json ./packages/shared/package.json
 COPY apps/api/package.json ./apps/api/package.json
 RUN pnpm install --frozen-lockfile
@@ -14,9 +15,9 @@ RUN pnpm install --frozen-lockfile
 FROM deps AS build
 COPY packages/shared ./packages/shared
 COPY apps/api ./apps/api
-RUN pnpm --filter @financas/shared build && pnpm --filter @financas/api build
+RUN pnpm --filter @dindim/shared build && pnpm --filter @dindim/api build
 # Sem `pnpm prune --prod` aqui: com node-linker=hoisted ele quebra o symlink
-# local de @financas/shared (bug conhecido dessa combinação). A imagem fica
+# local de @dindim/shared (bug conhecido dessa combinação). A imagem fica
 # maior carregando devDependencies, mas funciona — não é a imagem de deploy.
 
 FROM base AS runtime

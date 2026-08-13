@@ -9,7 +9,7 @@ import { logger } from './lib/logger.js';
 import { ensureDefaultCategories } from './lib/seed.js';
 
 export const auth = betterAuth({
-  appName: 'financas',
+  appName: 'dindim',
   database: drizzleAdapter(db, { provider: 'pg', schema }),
   baseURL: env.BETTER_AUTH_URL,
   secret: env.BETTER_AUTH_SECRET,

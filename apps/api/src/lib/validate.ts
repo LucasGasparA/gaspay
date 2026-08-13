@@ -7,7 +7,7 @@ import type { ZodType } from 'zod';
  * responder direto. Assim todo erro de validação sai no mesmo formato, com
  * `requestId`, e nenhuma rota precisa lembrar disso.
  *
- * Os schemas vêm de `@financas/shared` e são todos `.strict()`: campo
+ * Os schemas vêm de `@dindim/shared` e são todos `.strict()`: campo
  * desconhecido no body vira 400. É o que impede o cliente de injetar `userId`.
  */
 export function validate<Target extends keyof ValidationTargets, Schema extends ZodType>(

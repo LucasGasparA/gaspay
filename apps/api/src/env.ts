@@ -38,7 +38,7 @@ const envSchema = z.object({
     .refine((emails) => emails.length > 0, 'ALLOWED_EMAILS não pode ficar vazia'),
 
   /** Scheme do deep link do app. Precisa bater com o `scheme` do app.config.ts. */
-  MOBILE_SCHEME: z.string().min(1).default('financas'),
+  MOBILE_SCHEME: z.string().min(1).default('dindim'),
 
   /** Teto do rate limit global, em requests por minuto por IP. */
   RATE_LIMIT_PER_MINUTE: z.coerce.number().int().min(1).default(100),

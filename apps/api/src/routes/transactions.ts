@@ -5,7 +5,7 @@ import {
   listTransactionsQuerySchema,
   updateTransactionSchema,
   type TransactionDTO,
-} from '@financas/shared';
+} from '@dindim/shared';
 import { and, desc, eq, getTableColumns, gte, ilike, lt, lte, or, sql } from 'drizzle-orm';
 import { Hono } from 'hono';
 import { HTTPException } from 'hono/http-exception';

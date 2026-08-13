@@ -8,19 +8,19 @@ import type { ExpoConfig } from 'expo/config';
 const apiUrl = process.env.EXPO_PUBLIC_API_URL ?? 'http://192.168.0.10:3000';
 
 const config: ExpoConfig = {
-  name: 'Finanças',
-  slug: 'financas',
+  name: 'Dindim',
+  slug: 'dindim',
   version: '1.0.0',
   orientation: 'portrait',
   icon: './assets/icon.png',
   userInterfaceStyle: 'light',
   // Sem isso o navegador que faz o login Google não sabe voltar pro app.
-  scheme: 'financas',
-  primaryColor: '#820AD1',
+  scheme: 'dindim',
+  primaryColor: '#B8860B',
   android: {
-    package: 'com.financas.mobile',
+    package: 'com.dindim.mobile',
     adaptiveIcon: {
-      backgroundColor: '#E6F4FE',
+      backgroundColor: '#B8860B',
       foregroundImage: './assets/android-icon-foreground.png',
       backgroundImage: './assets/android-icon-background.png',
       monochromeImage: './assets/android-icon-monochrome.png',
@@ -32,7 +32,15 @@ const config: ExpoConfig = {
     'expo-secure-store',
     'expo-web-browser',
     'expo-font',
-    'expo-splash-screen',
+    [
+      'expo-splash-screen',
+      {
+        image: './assets/splash-icon.png',
+        imageWidth: 160,
+        resizeMode: 'contain',
+        backgroundColor: '#B8860B',
+      },
+    ],
     [
       'expo-local-authentication',
       {

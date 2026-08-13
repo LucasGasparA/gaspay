@@ -1,5 +1,6 @@
 import { InterTight_400Regular, InterTight_500Medium, InterTight_600SemiBold } from '@expo-google-fonts/inter-tight';
-import { lightTheme } from '@financas/shared';
+import { lightTheme } from '@dindim/shared';
+import { QueryClientProvider } from '@tanstack/react-query';
 import { useFonts } from 'expo-font';
 import { Stack } from 'expo-router';
 import * as SplashScreen from 'expo-splash-screen';
@@ -8,6 +9,8 @@ import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
 import { BiometricGate } from '../components/BiometricGate';
 import { hydrateAuthStorage, useSession } from '../lib/auth-client';
+import { queryClient } from '../lib/query-client';
+import { ThemeProvider } from '../lib/theme-context';
 
 SplashScreen.preventAutoHideAsync().catch(() => undefined);
 
@@ -34,14 +37,18 @@ function AuthenticatedRoot() {
   if (!ready) return null;
 
   return (
-    <BiometricGate enabled={Boolean(session)}>
-      <Stack
-        screenOptions={{
-          headerShown: false,
-          contentStyle: { backgroundColor: lightTheme.colors.background },
-        }}
-      />
-    </BiometricGate>
+    <QueryClientProvider client={queryClient}>
+      <ThemeProvider>
+        <BiometricGate enabled={Boolean(session)}>
+          <Stack
+            screenOptions={{
+              headerShown: false,
+              contentStyle: { backgroundColor: lightTheme.colors.background },
+            }}
+          />
+        </BiometricGate>
+      </ThemeProvider>
+    </QueryClientProvider>
   );
 }
 

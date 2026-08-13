@@ -40,7 +40,7 @@ function withAndroidCxxSharedLink(config) {
       fs.copyFileSync(path.join(sourceDir, 'OnLoad.cpp'), path.join(jniDir, 'OnLoad.cpp'));
 
       const cmakeContent = fs.readFileSync(path.join(sourceDir, 'CMakeLists.txt'), 'utf8');
-      const patched = `${cmakeContent}\n\n# financas: ver plugins/withAndroidCxxSharedLink.js\ntarget_link_libraries(appmodules c++_shared)\n`;
+      const patched = `${cmakeContent}\n\n# dindim: ver plugins/withAndroidCxxSharedLink.js\ntarget_link_libraries(appmodules c++_shared)\n`;
       fs.writeFileSync(path.join(jniDir, 'CMakeLists.txt'), patched);
 
       return config;

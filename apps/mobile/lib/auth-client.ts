@@ -3,7 +3,7 @@ import { expoClient } from '@better-auth/expo/client';
 import { apiUrl } from './config';
 import { hydrateSecureSyncStorage, secureSyncStorage } from './secure-sync-storage';
 
-const STORAGE_PREFIX = 'financas';
+const STORAGE_PREFIX = 'dindim';
 
 export const authClient = createAuthClient({
   baseURL: apiUrl,
@@ -12,7 +12,7 @@ export const authClient = createAuthClient({
     // nesta combinação de versões — funciona normalmente em runtime.
     // @ts-expect-error — ver comentário acima.
     expoClient({
-      scheme: 'financas',
+      scheme: 'dindim',
       storagePrefix: STORAGE_PREFIX,
       storage: secureSyncStorage,
     }),

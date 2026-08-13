@@ -4,3 +4,4 @@ export * from './category.js';
 export * from './transaction.js';
 export * from './budget.js';
 export * from './goal.js';
+export * from './analytics.js';

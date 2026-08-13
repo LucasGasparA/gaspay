@@ -17,6 +17,8 @@ export type UpsertBudgetInput = z.infer<typeof upsertBudgetSchema>;
 export interface BudgetDTO {
   id: string;
   categoryId: string;
+  categoryName: string;
+  categoryColor: string;
   month: string;
   limitCents: string;
   /** Quanto já foi gasto na categoria no mês. Vem agregado do SQL. */

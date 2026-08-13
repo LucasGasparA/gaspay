@@ -34,7 +34,7 @@ export function useAppLock(enabled: boolean): AppLock {
     }
 
     const result = await LocalAuthentication.authenticateAsync({
-      promptMessage: 'Destrave o Finanças',
+      promptMessage: 'Destrave o Dindim',
       cancelLabel: 'Cancelar',
       disableDeviceFallback: false,
     });

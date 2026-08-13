@@ -118,12 +118,18 @@ export function TransactionForm({ initialValues, submitLabel, onSubmit, onDelete
         <Pressable
           style={[styles.kindButton, kind === 'expense' && styles.kindButtonActive]}
           onPress={() => selectKind('expense')}
+          accessibilityRole="radio"
+          accessibilityLabel="Saída"
+          accessibilityState={{ selected: kind === 'expense' }}
         >
           <Text style={[styles.kindLabel, kind === 'expense' && styles.kindLabelActive]}>Saída</Text>
         </Pressable>
         <Pressable
           style={[styles.kindButton, kind === 'income' && styles.kindButtonActive]}
           onPress={() => selectKind('income')}
+          accessibilityRole="radio"
+          accessibilityLabel="Entrada"
+          accessibilityState={{ selected: kind === 'income' }}
         >
           <Text style={[styles.kindLabel, kind === 'income' && styles.kindLabelActive]}>Entrada</Text>
         </Pressable>
@@ -182,7 +188,14 @@ export function TransactionForm({ initialValues, submitLabel, onSubmit, onDelete
       {error ? <Text style={styles.error}>{error}</Text> : null}
 
       <View style={styles.footer}>
-        <Pressable style={styles.submitButton} onPress={() => void handleSubmit()} disabled={submitting}>
+        <Pressable
+          style={styles.submitButton}
+          onPress={() => void handleSubmit()}
+          disabled={submitting}
+          accessibilityRole="button"
+          accessibilityLabel={submitLabel}
+          accessibilityState={{ disabled: submitting, busy: submitting }}
+        >
           {submitting ? (
             <ActivityIndicator color={colors.onBrand} />
           ) : (
@@ -191,7 +204,13 @@ export function TransactionForm({ initialValues, submitLabel, onSubmit, onDelete
         </Pressable>
 
         {onDelete ? (
-          <Pressable style={styles.deleteButton} onPress={() => void handleDelete()} disabled={submitting}>
+          <Pressable
+            style={styles.deleteButton}
+            onPress={() => void handleDelete()}
+            disabled={submitting}
+            accessibilityRole="button"
+            accessibilityLabel="Excluir lançamento"
+          >
             <Text style={styles.deleteLabel}>Excluir lançamento</Text>
           </Pressable>
         ) : null}

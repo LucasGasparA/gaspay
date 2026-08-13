@@ -155,3 +155,101 @@ export function percentOfCents(part: Cents, total: Cents): number {
   if (total === 0n) return 0;
   return Number((absCents(part) * 10000n) / absCents(total)) / 100;
 }
+
+const WORD_UNITS = ['zero', 'um', 'dois', 'três', 'quatro', 'cinco', 'seis', 'sete', 'oito', 'nove'];
+const WORD_TEENS = [
+  'dez', 'onze', 'doze', 'treze', 'catorze', 'quinze',
+  'dezesseis', 'dezessete', 'dezoito', 'dezenove',
+];
+const WORD_TENS = ['', '', 'vinte', 'trinta', 'quarenta', 'cinquenta', 'sessenta', 'setenta', 'oitenta', 'noventa'];
+const WORD_HUNDREDS = [
+  '', 'cento', 'duzentos', 'trezentos', 'quatrocentos', 'quinhentos',
+  'seiscentos', 'setecentos', 'oitocentos', 'novecentos',
+];
+const WORD_SCALE_SINGULAR = ['', 'mil', 'milhão', 'bilhão'];
+const WORD_SCALE_PLURAL = ['', 'mil', 'milhões', 'bilhões'];
+
+/** `247` → `"duzentos e quarenta e sete"`. `0` → `""` (grupo vazio). */
+function threeDigitsToWordsPtBR(n: number): string {
+  if (n === 0) return '';
+  if (n === 100) return 'cem';
+
+  const hundreds = Math.floor(n / 100);
+  const rest = n % 100;
+  const parts: string[] = [];
+
+  if (hundreds > 0) parts.push(WORD_HUNDREDS[hundreds] as string);
+
+  if (rest > 0) {
+    if (rest < 10) parts.push(WORD_UNITS[rest] as string);
+    else if (rest < 20) parts.push(WORD_TEENS[rest - 10] as string);
+    else {
+      const tens = Math.floor(rest / 10);
+      const units = rest % 10;
+      parts.push(units === 0 ? (WORD_TENS[tens] as string) : `${WORD_TENS[tens]} e ${WORD_UNITS[units]}`);
+    }
+  }
+
+  return parts.join(' e ');
+}
+
+/**
+ * Só até bilhões — mais que suficiente pra um app de finanças pessoais, e
+ * evita a complexidade de escalas maiores que nunca vão aparecer aqui.
+ */
+function numberToWordsPtBR(n: bigint): string {
+  if (n === 0n) return 'zero';
+  if (n < 0n || n >= 1_000_000_000_000n) throw new Error(`número fora do intervalo suportado: ${n}`);
+
+  const groups: number[] = [];
+  let remaining = n;
+  while (remaining > 0n) {
+    groups.push(Number(remaining % 1000n));
+    remaining /= 1000n;
+  }
+
+  const segments: string[] = [];
+  let lastValue = 0;
+  for (let i = groups.length - 1; i >= 0; i--) {
+    const value = groups[i] as number;
+    if (value === 0) continue;
+    lastValue = value;
+
+    const words = threeDigitsToWordsPtBR(value);
+    if (i === 0) segments.push(words);
+    else if (i === 1) segments.push(value === 1 ? 'mil' : `${words} mil`);
+    else segments.push(`${words} ${value === 1 ? WORD_SCALE_SINGULAR[i] : WORD_SCALE_PLURAL[i]}`);
+  }
+
+  if (segments.length === 1) return segments[0] as string;
+
+  const last = segments[segments.length - 1];
+  const rest = segments.slice(0, -1).join(', ');
+  // "mil e duzentos", "um milhão e trinta" — "e" entra antes do último grupo
+  // só quando ele é menor que 100; senão a vírgula já basta ("um milhão,
+  // duzentos mil e trinta" fica "um milhão, duzentos mil e trinta").
+  return lastValue < 100 ? `${rest} e ${last}` : `${rest}, ${last}`;
+}
+
+/**
+ * `124050n` → `"um real e vinte e quatro centavos"`. Pensado pra
+ * `accessibilityLabel` — leitor de tela lendo "R$ 1.240,50" soletra os
+ * dígitos, isso aqui lê como uma pessoa falaria o valor em voz alta.
+ */
+export function centsToWordsPtBR(cents: Cents): string {
+  const { negative, whole, fraction } = splitCents(cents);
+  const wholeNum = BigInt(whole);
+  const fractionNum = Number(fraction);
+
+  const wholeWords = numberToWordsPtBR(wholeNum);
+  const realWord = wholeNum === 1n ? 'real' : 'reais';
+  let out = `${wholeWords} ${realWord}`;
+
+  if (fractionNum > 0) {
+    const fractionWords = numberToWordsPtBR(BigInt(fractionNum));
+    const centavoWord = fractionNum === 1 ? 'centavo' : 'centavos';
+    out += ` e ${fractionWords} ${centavoWord}`;
+  }
+
+  return negative ? `menos ${out}` : out;
+}

@@ -8,14 +8,18 @@ interface PrimaryButtonProps {
   onPress: () => void;
   loading?: boolean;
   disabled?: boolean;
+  accessibilityLabel?: string;
 }
 
-export function PrimaryButton({ label, onPress, loading, disabled }: PrimaryButtonProps) {
+export function PrimaryButton({ label, onPress, loading, disabled, accessibilityLabel }: PrimaryButtonProps) {
   return (
     <Pressable
       style={({ pressed }) => [styles.button, pressed && styles.pressed]}
       onPress={onPress}
       disabled={disabled || loading}
+      accessibilityRole="button"
+      accessibilityLabel={accessibilityLabel ?? label}
+      accessibilityState={{ disabled: disabled || loading, busy: loading }}
     >
       {loading ? <ActivityIndicator color={colors.onBrand} /> : <Text style={styles.label}>{label}</Text>}
     </Pressable>

@@ -2,19 +2,21 @@ import { lightTheme } from '@dindim/shared';
 import { Link } from 'expo-router';
 import * as Haptics from 'expo-haptics';
 import { useState } from 'react';
-import { KeyboardAvoidingView, Platform, Pressable, StyleSheet, Text, View } from 'react-native';
+import { StyleSheet, Text, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
-import { Field } from '../components/Field';
 import { PrimaryButton } from '../components/PrimaryButton';
-import { TextLink } from '../components/TextLink';
 import { signInWithGoogle } from '../lib/auth-client';
 
 const { colors, space, typography } = lightTheme;
 
+/**
+ * Só existe login via Google (`emailAndPassword: { enabled: false }` em
+ * `apps/api/src/auth.ts`, decisão deliberada) — por isso a tela não mostra
+ * campos de e-mail/senha nem "esqueci minha senha", que não têm nenhum
+ * fluxo real por trás. Ver DDM-1.
+ */
 export default function Login() {
   const insets = useSafeAreaInsets();
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
   const [pending, setPending] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
@@ -33,10 +35,7 @@ export default function Login() {
   }
 
   return (
-    <KeyboardAvoidingView
-      style={styles.container}
-      behavior={Platform.OS === 'ios' ? 'padding' : undefined}
-    >
+    <View style={styles.container}>
       <View style={[styles.header, { paddingTop: insets.top + space.lg }]}>
         <View style={styles.logo}>
           <Text style={styles.logoLetter}>D</Text>
@@ -47,20 +46,17 @@ export default function Login() {
       </View>
 
       <View style={[styles.sheet, { paddingBottom: space.xl + insets.bottom }]}>
-        <View style={styles.fields}>
-          <Field label="E-mail" value={email} onChangeText={setEmail} placeholder="seuemail@email.com" keyboardType="email-address" autoCapitalize="none" autoComplete="email" />
-          <Field label="Senha" value={password} onChangeText={setPassword} placeholder="Sua senha" secure autoComplete="password" />
-        </View>
-
         <View style={styles.spacer} />
 
         {error ? <Text style={styles.error}>{error}</Text> : null}
 
         <View style={styles.actions}>
-          <PrimaryButton label="Entrar" onPress={() => void handleGoogle()} loading={pending} />
-          <TextLink label="Esqueci minha senha" />
-          <View style={styles.divider} />
-          <TextLink label="Entrar com Google" onPress={() => void handleGoogle()} />
+          <PrimaryButton
+            label="Entrar com Google"
+            onPress={() => void handleGoogle()}
+            loading={pending}
+            accessibilityLabel="Entrar com Google"
+          />
           <Text style={styles.footer}>
             Ainda não tem conta?{' '}
             <Link href="/signup" asChild>
@@ -69,7 +65,7 @@ export default function Login() {
           </Text>
         </View>
       </View>
-    </KeyboardAvoidingView>
+    </View>
   );
 }
 
@@ -95,11 +91,9 @@ const styles = StyleSheet.create({
     paddingTop: space.xl,
     paddingHorizontal: space.lg,
   },
-  fields: { gap: space.xl },
-  spacer: { flex: 1, minHeight: space.xl },
+  spacer: { flex: 1 },
   error: { fontSize: typography.size.footnote, color: colors.danger, textAlign: 'center', marginBottom: space.sm },
   actions: { gap: space.lg },
-  divider: { height: 1, backgroundColor: colors.border },
   footer: { textAlign: 'center', fontSize: 14, color: colors.textSecondary },
   footerLink: { color: colors.brand, fontWeight: typography.weight.semibold },
 });

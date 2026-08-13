@@ -1,5 +1,5 @@
 import { dayKey, formatDayLabel, lightTheme, type TransactionDTO } from '@dindim/shared';
-import { Link, useRouter } from 'expo-router';
+import { useRouter } from 'expo-router';
 import { useEffect, useMemo, useState } from 'react';
 import {
   ActivityIndicator,
@@ -13,6 +13,7 @@ import {
 } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { EmptyState } from '../../components/EmptyState';
+import { Fab } from '../../components/Fab';
 import { TransactionRow } from '../../components/TransactionRow';
 import { useTransactions } from '../../hooks/use-transactions';
 
@@ -73,11 +74,6 @@ export default function Transactions() {
     <View style={[styles.container, { paddingTop: insets.top + space.md }]}>
       <View style={styles.header}>
         <Text style={styles.title}>Extrato</Text>
-        <Link href="/transaction/new" asChild>
-          <Pressable style={styles.addButton}>
-            <Text style={styles.addButtonLabel}>+</Text>
-          </Pressable>
-        </Link>
       </View>
 
       <TextInput
@@ -136,6 +132,7 @@ export default function Transactions() {
           ListFooterComponent={isFetchingNextPage ? <ActivityIndicator color={colors.brand} /> : null}
         />
       )}
+      <Fab accessibilityLabel="Nova transação" />
     </View>
   );
 }
@@ -143,29 +140,12 @@ export default function Transactions() {
 const styles = StyleSheet.create({
   container: { flex: 1, backgroundColor: colors.background, paddingHorizontal: space.lg },
   header: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
     marginBottom: space.md,
   },
   title: {
     fontSize: typography.size.display,
     fontWeight: typography.weight.semibold,
     color: colors.text,
-  },
-  addButton: {
-    width: 34,
-    height: 34,
-    borderRadius: radius.pill,
-    backgroundColor: colors.brand,
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  addButtonLabel: {
-    color: colors.onBrand,
-    fontSize: typography.size.title,
-    fontWeight: typography.weight.medium,
-    marginTop: -2,
   },
   search: {
     backgroundColor: colors.surface,

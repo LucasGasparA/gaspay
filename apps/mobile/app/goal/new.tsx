@@ -103,7 +103,7 @@ const styles = StyleSheet.create({
   },
   title: { fontSize: typography.size.title, fontWeight: typography.weight.semibold, color: colors.text },
   closeButton: { padding: space.xs },
-  closeLabel: { color: colors.textTertiary, fontSize: typography.size.body },
+  closeLabel: { color: colors.textSecondary, fontSize: typography.size.body },
   content: { padding: space.lg, paddingBottom: space.xl * 2 },
   amountWrap: { alignItems: 'center', paddingVertical: space.lg },
   amountLabel: { fontSize: typography.size.footnote, color: colors.textSecondary, marginTop: space.xs },

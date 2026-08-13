@@ -79,7 +79,7 @@ const styles = StyleSheet.create({
   },
   title: { fontSize: typography.size.title, fontWeight: typography.weight.semibold, color: colors.text },
   closeButton: { padding: space.xs },
-  closeLabel: { color: colors.textTertiary, fontSize: typography.size.body },
+  closeLabel: { color: colors.textSecondary, fontSize: typography.size.body },
   notice: {
     marginTop: space.xl,
     marginHorizontal: space.lg,

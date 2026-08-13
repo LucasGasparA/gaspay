@@ -29,11 +29,11 @@ export default function TabsLayout() {
         tabBarIcon: ({ focused }) => <TabIndicator focused={focused} color={colors.brand} />,
       }}
     >
-      <Tabs.Screen name="home" options={{ title: 'Início' }} />
-      <Tabs.Screen name="transactions" options={{ title: 'Extrato' }} />
-      <Tabs.Screen name="goals" options={{ title: 'Metas' }} />
-      <Tabs.Screen name="accounts" options={{ title: 'Contas' }} />
-      <Tabs.Screen name="profile" options={{ title: 'Perfil' }} />
+      <Tabs.Screen name="home" options={{ title: 'Início', tabBarAccessibilityLabel: 'Início' }} />
+      <Tabs.Screen name="transactions" options={{ title: 'Extrato', tabBarAccessibilityLabel: 'Extrato' }} />
+      <Tabs.Screen name="goals" options={{ title: 'Metas', tabBarAccessibilityLabel: 'Metas' }} />
+      <Tabs.Screen name="accounts" options={{ title: 'Contas', tabBarAccessibilityLabel: 'Contas' }} />
+      <Tabs.Screen name="profile" options={{ title: 'Perfil', tabBarAccessibilityLabel: 'Perfil' }} />
     </Tabs>
   );
 }

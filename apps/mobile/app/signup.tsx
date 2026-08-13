@@ -1,32 +1,24 @@
 import { lightTheme } from '@dindim/shared';
 import { useRouter } from 'expo-router';
 import * as Haptics from 'expo-haptics';
-import { useMemo, useState } from 'react';
-import { KeyboardAvoidingView, Platform, Pressable, StyleSheet, Text, View } from 'react-native';
+import { useState } from 'react';
+import { Pressable, StyleSheet, Text, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
-import { Field } from '../components/Field';
 import { PrimaryButton } from '../components/PrimaryButton';
 import { signInWithGoogle } from '../lib/auth-client';
 
-const { colors, space, radius, typography } = lightTheme;
+const { colors, space, typography } = lightTheme;
 
-function passwordStrength(password: string): { filled: number; label: string | null } {
-  if (password.length === 0) return { filled: 0, label: null };
-  if (password.length < 6) return { filled: 1, label: 'fraca' };
-  if (password.length < 10) return { filled: 2, label: 'boa' };
-  return { filled: 3, label: 'forte' };
-}
-
+/**
+ * Só existe cadastro via Google — mesmo motivo do login (ver login.tsx).
+ * Sem campos de nome/e-mail/senha decorativos: a conta é criada com um
+ * toque, usando os dados da conta Google. Ver DDM-1.
+ */
 export default function SignUp() {
   const insets = useSafeAreaInsets();
   const router = useRouter();
-  const [name, setName] = useState('');
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
   const [pending, setPending] = useState(false);
   const [error, setError] = useState<string | null>(null);
-
-  const strength = useMemo(() => passwordStrength(password), [password]);
 
   async function handleSubmit() {
     if (pending) return;
@@ -43,9 +35,15 @@ export default function SignUp() {
   }
 
   return (
-    <KeyboardAvoidingView style={styles.container} behavior={Platform.OS === 'ios' ? 'padding' : undefined}>
+    <View style={styles.container}>
       <View style={[styles.header, { paddingTop: insets.top + space.lg }]}>
-        <Pressable style={styles.back} onPress={() => router.back()} hitSlop={8}>
+        <Pressable
+          style={styles.back}
+          onPress={() => router.back()}
+          hitSlop={8}
+          accessibilityRole="button"
+          accessibilityLabel="Voltar"
+        >
           <Text style={styles.backLabel}>‹</Text>
         </Pressable>
         <Text style={styles.title}>Criar conta</Text>
@@ -53,47 +51,23 @@ export default function SignUp() {
       </View>
 
       <View style={[styles.sheet, { paddingBottom: space.xl + insets.bottom }]}>
-        <Field label="Nome" value={name} onChangeText={setName} placeholder="Seu nome" autoComplete="name" />
-        <Field
-          label="E-mail"
-          value={email}
-          onChangeText={setEmail}
-          placeholder="seuemail@email.com"
-          keyboardType="email-address"
-          autoCapitalize="none"
-          autoComplete="email"
-        />
-        <View>
-          <Field
-            label="Criar senha"
-            value={password}
-            onChangeText={setPassword}
-            placeholder="mínimo 8 caracteres"
-            secure
-            autoComplete="password-new"
-          />
-          <View style={styles.strengthRow}>
-            {[0, 1, 2].map((i) => (
-              <View
-                key={i}
-                style={[
-                  styles.strengthBar,
-                  { backgroundColor: i < strength.filled ? colors.income : colors.border },
-                ]}
-              />
-            ))}
-            {strength.label ? <Text style={styles.strengthLabel}>{strength.label}</Text> : null}
-          </View>
-        </View>
+        <Text style={styles.explainer}>
+          Sua conta é criada automaticamente com sua conta Google — sem senha pra lembrar.
+        </Text>
 
         <View style={styles.spacer} />
 
         {error ? <Text style={styles.error}>{error}</Text> : null}
 
-        <PrimaryButton label="Criar conta" onPress={() => void handleSubmit()} loading={pending} />
+        <PrimaryButton
+          label="Continuar com Google"
+          onPress={() => void handleSubmit()}
+          loading={pending}
+          accessibilityLabel="Criar conta com Google"
+        />
         <Text style={styles.legal}>Ao continuar, você aceita os termos de uso.</Text>
       </View>
-    </KeyboardAvoidingView>
+    </View>
   );
 }
 
@@ -119,12 +93,9 @@ const styles = StyleSheet.create({
     borderTopRightRadius: 28,
     paddingTop: space.xl,
     paddingHorizontal: space.lg,
-    gap: space.xl,
   },
-  strengthRow: { flexDirection: 'row', gap: 6, alignItems: 'center', marginTop: space.sm },
-  strengthBar: { flex: 1, height: 4, borderRadius: radius.pill },
-  strengthLabel: { fontSize: 11, color: colors.textSecondary, marginLeft: 4 },
+  explainer: { fontSize: typography.size.body, color: colors.textSecondary, lineHeight: 22 },
   spacer: { flex: 1, minHeight: space.md },
-  error: { fontSize: typography.size.footnote, color: colors.danger, textAlign: 'center' },
-  legal: { fontSize: 12, color: colors.textTertiary, textAlign: 'center' },
+  error: { fontSize: typography.size.footnote, color: colors.danger, textAlign: 'center', marginBottom: space.sm },
+  legal: { fontSize: 12, color: colors.textSecondary, textAlign: 'center', marginTop: space.md },
 });

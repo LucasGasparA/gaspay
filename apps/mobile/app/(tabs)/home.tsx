@@ -1,9 +1,10 @@
-import { daysLeftInMonth, formatCents, monthStart, sumCents } from '@dindim/shared';
+import { centsToWordsPtBR, daysLeftInMonth, formatCents, monthStart, sumCents } from '@dindim/shared';
 import { useRouter } from 'expo-router';
 import { useMemo } from 'react';
 import { ActivityIndicator, RefreshControl, ScrollView, StyleSheet, Text, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { EmptyState } from '../../components/EmptyState';
+import { Fab } from '../../components/Fab';
 import { FlowChart } from '../../components/FlowChart';
 import { ProgressBar } from '../../components/ProgressBar';
 import { TransactionRow } from '../../components/TransactionRow';
@@ -98,14 +99,14 @@ export default function Home() {
   }
 
   return (
-    <ScrollView
-      style={[styles.container, { backgroundColor: colors.background }]}
-      contentContainerStyle={[
-        styles.content,
-        { paddingHorizontal: space.lg, paddingBottom: space.xl, gap: space.xl, paddingTop: insets.top + space.md },
-      ]}
-      refreshControl={<RefreshControl refreshing={accountsRefetching} onRefresh={handleRefresh} />}
-    >
+    <View style={[styles.container, { backgroundColor: colors.background }]}>
+      <ScrollView
+        contentContainerStyle={[
+          styles.content,
+          { paddingHorizontal: space.lg, paddingBottom: space.xl, gap: space.xl, paddingTop: insets.top + space.md },
+        ]}
+        refreshControl={<RefreshControl refreshing={accountsRefetching} onRefresh={handleRefresh} />}
+      >
       <View style={styles.greetingRow}>
         <View>
           <Text style={[styles.greeting, { color: colors.text, fontWeight: typography.weight.semibold }]}>
@@ -135,7 +136,10 @@ export default function Home() {
         <>
           <View>
             <Text style={[styles.balanceLabel, { color: colors.textSecondary }]}>Saldo total</Text>
-            <Text style={[styles.balanceValue, { color: colors.text, fontWeight: typography.weight.semibold }]}>
+            <Text
+              style={[styles.balanceValue, { color: colors.text, fontWeight: typography.weight.semibold }]}
+              accessibilityLabel={`Saldo total: ${centsToWordsPtBR(totalBalanceCents)}`}
+            >
               {formatCents(totalBalanceCents)}
             </Text>
             <View style={[styles.summaryRow, { gap: space.xl, marginTop: space.md }]}>
@@ -253,7 +257,9 @@ export default function Home() {
           </View>
         </>
       )}
-    </ScrollView>
+      </ScrollView>
+      <Fab accessibilityLabel="Nova transação" />
+    </View>
   );
 }
 

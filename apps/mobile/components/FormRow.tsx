@@ -9,12 +9,22 @@ interface FormRowProps {
   color?: string | null;
   onPress?: () => void;
   isLast?: boolean;
+  /** Default: `"${label}: ${value}, toque para alterar"` quando é acionável. */
+  accessibilityLabel?: string;
 }
 
 /** Linha label/valor com "›" quando é acionável — usada no form de lançamento e no perfil. */
-export function FormRow({ label, value, color, onPress, isLast }: FormRowProps) {
+export function FormRow({ label, value, color, onPress, isLast, accessibilityLabel }: FormRowProps) {
   return (
-    <Pressable style={[styles.row, !isLast && styles.rowBorder]} onPress={onPress} disabled={!onPress}>
+    <Pressable
+      style={[styles.row, !isLast && styles.rowBorder]}
+      onPress={onPress}
+      disabled={!onPress}
+      accessibilityRole={onPress ? 'button' : undefined}
+      accessibilityLabel={
+        onPress ? (accessibilityLabel ?? `${label}: ${value ?? 'não definido'}, toque para alterar`) : undefined
+      }
+    >
       <Text style={styles.label}>{label}</Text>
       <View style={styles.valueGroup}>
         {color ? <View style={[styles.dot, { backgroundColor: color }]} /> : null}

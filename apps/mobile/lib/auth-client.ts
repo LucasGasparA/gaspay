@@ -1,7 +1,9 @@
 import { createAuthClient } from 'better-auth/react';
 import { expoClient } from '@better-auth/expo/client';
-import * as SecureStore from 'expo-secure-store';
 import { apiUrl } from './config';
+import { hydrateSecureSyncStorage, secureSyncStorage } from './secure-sync-storage';
+
+const STORAGE_PREFIX = 'financas';
 
 export const authClient = createAuthClient({
   baseURL: apiUrl,
@@ -11,11 +13,20 @@ export const authClient = createAuthClient({
     // @ts-expect-error — ver comentário acima.
     expoClient({
       scheme: 'financas',
-      storagePrefix: 'financas',
-      storage: SecureStore,
+      storagePrefix: STORAGE_PREFIX,
+      storage: secureSyncStorage,
     }),
   ],
 });
+
+/**
+ * Chama antes de renderizar qualquer coisa que use `useSession()`. Sem isso o
+ * cache síncrono do storage está vazio no boot e a sessão salva nunca é lida
+ * de volta — o app volta pro login mesmo com o token no SecureStore.
+ */
+export function hydrateAuthStorage(): Promise<void> {
+  return hydrateSecureSyncStorage([`${STORAGE_PREFIX}_cookie`, `${STORAGE_PREFIX}_session_data`]);
+}
 
 export const { useSession, signOut } = authClient;
 

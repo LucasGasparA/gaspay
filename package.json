@@ -11,7 +11,8 @@
     "typecheck": "pnpm -r typecheck",
     "test": "pnpm -r test",
     "api": "pnpm --filter @financas/api dev",
-    "mobile": "pnpm --filter @financas/mobile start"
+    "mobile": "pnpm --filter @financas/mobile start",
+    "postinstall": "node scripts/patch-native-cmake.mjs"
   },
   "devDependencies": {
     "typescript": "^5.9.3"

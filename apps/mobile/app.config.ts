@@ -39,6 +39,9 @@ const config: ExpoConfig = {
         faceIDPermission: 'Usar biometria para destravar o app.',
       },
     ],
+    // Ver o arquivo: contorna um bug de toolchain do NDK 27 + CMake 3.22.1
+    // que faz o build nativo do Android falhar/crashar sem isso.
+    './plugins/withAndroidCxxSharedLink.js',
   ],
   extra: {
     apiUrl,

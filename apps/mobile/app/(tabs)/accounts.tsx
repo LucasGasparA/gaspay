@@ -3,6 +3,7 @@ import { Link, useRouter } from 'expo-router';
 import { useMemo } from 'react';
 import { ActivityIndicator, ScrollView, StyleSheet, Text, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
+import { Badge } from '../../components/Badge';
 import { EmptyState } from '../../components/EmptyState';
 import { useAccounts } from '../../hooks/use-accounts';
 
@@ -12,7 +13,7 @@ function AccountRow({ account, isLast }: { account: AccountDTO; isLast: boolean 
   const negative = BigInt(account.balanceCents) < 0n;
   return (
     <View style={[styles.row, !isLast && styles.rowBorder]}>
-      <View style={[styles.dot, { backgroundColor: account.color ?? colors.brand }]} />
+      <Badge letter={account.name.charAt(0).toUpperCase()} color={account.color ?? colors.brand} size={36} />
       <View style={styles.rowMiddle}>
         <Text style={styles.rowName}>{account.name}</Text>
         <Text style={styles.rowType}>{accountTypeLabels[account.type]}</Text>
@@ -85,7 +86,6 @@ const styles = StyleSheet.create({
   card: { backgroundColor: colors.surface, borderRadius: radius.lg, overflow: 'hidden' },
   row: { flexDirection: 'row', alignItems: 'center', gap: space.md, padding: space.md },
   rowBorder: { borderBottomWidth: 1, borderBottomColor: colors.border },
-  dot: { width: 10, height: 10, borderRadius: radius.pill, flexShrink: 0 },
   rowMiddle: { flex: 1 },
   rowName: { fontSize: typography.size.body, fontWeight: typography.weight.medium, color: colors.text },
   rowType: { fontSize: typography.size.footnote, color: colors.textSecondary, marginTop: 2 },

@@ -12,15 +12,48 @@ const { colors, space, radius, typography } = lightTheme;
 
 const typeOptions = accountTypes.map((type) => ({ id: type, label: accountTypeLabels[type] }));
 
+/**
+ * Só identificador visual — nome real do banco (sem problema, é uso
+ * nominativo) mas cor genérica, não a cor de marca de cada banco. Nenhum
+ * logo é reproduzido aqui (ver DDM-8). "Outro" cai na cor neutra padrão.
+ */
+const institutionOptions: { id: string; label: string; color: string | null }[] = [
+  { id: 'nubank', label: 'Nubank', color: '#6B5FA8' },
+  { id: 'itau', label: 'Itaú', color: '#D4863F' },
+  { id: 'bradesco', label: 'Bradesco', color: '#C9506A' },
+  { id: 'santander', label: 'Santander', color: '#D4453F' },
+  { id: 'bb', label: 'Banco do Brasil', color: '#4477AA' },
+  { id: 'caixa', label: 'Caixa', color: '#2E9E8F' },
+  { id: 'inter', label: 'Inter', color: '#E0A23C' },
+  { id: 'c6', label: 'C6 Bank', color: '#3D3D42' },
+  { id: 'picpay', label: 'PicPay', color: '#5FA88B' },
+  { id: 'other', label: 'Outro / Carteira', color: null },
+];
+
+type PickerKind = 'type' | 'institution' | null;
+
 export default function NewAccount() {
   const router = useRouter();
   const createAccount = useCreateAccount();
 
   const [name, setName] = useState('');
+  const [nameTouched, setNameTouched] = useState(false);
   const [type, setType] = useState<AccountType>('checking');
+  const [institutionId, setInstitutionId] = useState<string | null>(null);
   const [initialBalanceCents, setInitialBalanceCents] = useState<bigint>(0n);
-  const [pickerOpen, setPickerOpen] = useState(false);
+  const [openPicker, setOpenPicker] = useState<PickerKind>(null);
   const [error, setError] = useState<string | null>(null);
+
+  const institution = institutionOptions.find((i) => i.id === institutionId);
+
+  function selectInstitution(id: string) {
+    setInstitutionId(id);
+    // Só sugere o nome se a pessoa ainda não escreveu o dela — não pisa em cima.
+    if (!nameTouched) {
+      const chosen = institutionOptions.find((i) => i.id === id);
+      if (chosen && chosen.id !== 'other') setName(chosen.label);
+    }
+  }
 
   async function handleSubmit() {
     if (!name.trim()) {
@@ -34,6 +67,7 @@ export default function NewAccount() {
         name: name.trim(),
         type,
         initialBalanceCents: initialBalanceCents.toString(),
+        color: institution?.color ?? null,
       });
       router.back();
     } catch {
@@ -57,17 +91,26 @@ export default function NewAccount() {
         </View>
 
         <FormGroup>
+          <FormRow
+            label="Instituição"
+            value={institution?.label ?? 'Escolher'}
+            color={institution?.color}
+            onPress={() => setOpenPicker('institution')}
+          />
           <View style={styles.textRow}>
             <Text style={styles.textRowLabel}>Nome</Text>
             <TextInput
               style={styles.textRowInput}
               value={name}
-              onChangeText={setName}
+              onChangeText={(text) => {
+                setName(text);
+                setNameTouched(true);
+              }}
               placeholder="Ex.: Nubank"
               placeholderTextColor={colors.textTertiary}
             />
           </View>
-          <FormRow label="Tipo" value={accountTypeLabels[type]} onPress={() => setPickerOpen(true)} isLast />
+          <FormRow label="Tipo" value={accountTypeLabels[type]} onPress={() => setOpenPicker('type')} isLast />
         </FormGroup>
 
         {error ? <Text style={styles.error}>{error}</Text> : null}
@@ -82,12 +125,20 @@ export default function NewAccount() {
       </ScrollView>
 
       <PickerModal
-        visible={pickerOpen}
+        visible={openPicker === 'type'}
         title="Tipo de conta"
         options={typeOptions}
         selectedId={type}
         onSelect={(id) => setType(id as AccountType)}
-        onClose={() => setPickerOpen(false)}
+        onClose={() => setOpenPicker(null)}
+      />
+      <PickerModal
+        visible={openPicker === 'institution'}
+        title="Instituição"
+        options={institutionOptions}
+        selectedId={institutionId}
+        onSelect={selectInstitution}
+        onClose={() => setOpenPicker(null)}
       />
     </View>
   );

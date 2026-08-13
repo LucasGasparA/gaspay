@@ -3,6 +3,7 @@ import { useRouter } from 'expo-router';
 import { useState } from 'react';
 import { Pressable, ScrollView, StyleSheet, Text, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
+import { EditNameModal } from '../../components/EditNameModal';
 import { SettingRow } from '../../components/SettingRow';
 import { SettingsGroup } from '../../components/SettingsGroup';
 import { useMe } from '../../hooks/use-me';
@@ -23,9 +24,10 @@ export default function Profile() {
   const router = useRouter();
   const { data: me } = useMe();
   const { isDark, setDark } = useTheme();
+  const [editingName, setEditingName] = useState(false);
 
-  // Preferências ainda não têm backend — toggles são só locais por enquanto.
-  const [hideBalance, setHideBalance] = useState(true);
+  // Preferências ainda não têm backend — toggles são só locais por enquanto
+  // (decisão explícita: manter Notificações/Segurança como estão, ver DDM-6).
   const [budgetAlerts, setBudgetAlerts] = useState(true);
   const [weeklySummary, setWeeklySummary] = useState(true);
   const [billReminder, setBillReminder] = useState(false);
@@ -46,27 +48,19 @@ export default function Profile() {
           <Text style={styles.name}>{me?.user.name ?? '...'}</Text>
           <Text style={styles.email}>{me?.user.email ?? ''}</Text>
         </View>
-        <Text style={styles.editLink}>Editar</Text>
+        <Pressable onPress={() => setEditingName(true)} hitSlop={8}>
+          <Text style={styles.editLink}>Editar</Text>
+        </Pressable>
       </View>
 
       <SettingsGroup title="Conta">
-        <SettingRow label="Dados pessoais" hint="Nome, CPF, telefone" />
-        <SettingRow label="Contas conectadas" value="3 bancos" />
-        <SettingRow label="Assinatura" value="Grátis" isLast />
+        <SettingRow label="Contas conectadas" value="3 bancos" isLast />
       </SettingsGroup>
 
       <SettingsGroup title="Preferências">
         <SettingRow label="Moeda" value="BRL (R$)" />
         <SettingRow label="Início do mês financeiro" value="Dia 1" />
-        <SettingRow label="Modo escuro" toggle on={isDark} onToggle={setDark} />
-        <SettingRow
-          label="Ocultar saldo ao abrir"
-          hint="Mostra apenas ao tocar"
-          toggle
-          on={hideBalance}
-          onToggle={setHideBalance}
-          isLast
-        />
+        <SettingRow label="Modo escuro" toggle on={isDark} onToggle={setDark} isLast />
       </SettingsGroup>
 
       <SettingsGroup title="Notificações">
@@ -100,6 +94,12 @@ export default function Profile() {
       <Pressable style={styles.signOut} onPress={() => signOut()}>
         <Text style={styles.signOutLabel}>Sair da conta</Text>
       </Pressable>
+
+      <EditNameModal
+        visible={editingName}
+        currentName={me?.user.name ?? ''}
+        onClose={() => setEditingName(false)}
+      />
     </ScrollView>
   );
 }

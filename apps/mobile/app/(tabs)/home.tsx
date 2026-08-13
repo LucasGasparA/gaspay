@@ -1,7 +1,8 @@
+import { Ionicons } from '@expo/vector-icons';
 import { centsToWordsPtBR, daysLeftInMonth, formatCents, monthStart, sumCents } from '@dindim/shared';
 import { useRouter } from 'expo-router';
-import { useMemo } from 'react';
-import { ActivityIndicator, RefreshControl, ScrollView, StyleSheet, Text, View } from 'react-native';
+import { useMemo, useState } from 'react';
+import { ActivityIndicator, Pressable, RefreshControl, ScrollView, StyleSheet, Text, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { EmptyState } from '../../components/EmptyState';
 import { Fab } from '../../components/Fab';
@@ -89,6 +90,7 @@ export default function Home() {
 
   const isLoading = accountsLoading || recentLoading;
   const hasAccounts = (accountsData?.items.length ?? 0) > 0;
+  const [balanceHidden, setBalanceHidden] = useState(false);
 
   function handleRefresh() {
     void refetchAccounts();
@@ -136,12 +138,27 @@ export default function Home() {
         <>
           <View>
             <Text style={[styles.balanceLabel, { color: colors.textSecondary }]}>Saldo total</Text>
-            <Text
-              style={[styles.balanceValue, { color: colors.text, fontWeight: typography.weight.semibold }]}
-              accessibilityLabel={`Saldo total: ${centsToWordsPtBR(totalBalanceCents)}`}
-            >
-              {formatCents(totalBalanceCents)}
-            </Text>
+            <View style={styles.balanceRow}>
+              <Text
+                style={[styles.balanceValue, { color: colors.text, fontWeight: typography.weight.semibold }]}
+                accessibilityLabel={balanceHidden ? 'Saldo oculto' : `Saldo total: ${centsToWordsPtBR(totalBalanceCents)}`}
+              >
+                {balanceHidden ? 'R$ ••••' : formatCents(totalBalanceCents)}
+              </Text>
+              <Pressable
+                onPress={() => setBalanceHidden((prev) => !prev)}
+                hitSlop={8}
+                style={styles.balanceToggle}
+                accessibilityRole="button"
+                accessibilityLabel={balanceHidden ? 'Mostrar saldo' : 'Ocultar saldo'}
+              >
+                <Ionicons
+                  name={balanceHidden ? 'eye-off-outline' : 'eye-outline'}
+                  size={22}
+                  color={colors.textSecondary}
+                />
+              </Pressable>
+            </View>
             <View style={[styles.summaryRow, { gap: space.xl, marginTop: space.md }]}>
               <View>
                 <Text style={[styles.summaryLabel, { color: colors.textSecondary }]}>Entradas</Text>
@@ -272,7 +289,9 @@ const styles = StyleSheet.create({
   avatar: { width: 40, height: 40, alignItems: 'center', justifyContent: 'center' },
   avatarLabel: { fontSize: 15 },
   balanceLabel: { fontSize: 13 },
-  balanceValue: { fontSize: 36, marginTop: 4, fontVariant: ['tabular-nums'] },
+  balanceRow: { flexDirection: 'row', alignItems: 'center', gap: 8, marginTop: 4 },
+  balanceValue: { fontSize: 36, fontVariant: ['tabular-nums'] },
+  balanceToggle: { padding: 2 },
   summaryRow: { flexDirection: 'row' },
   projection: { fontSize: 13 },
   summaryLabel: { fontSize: 12 },

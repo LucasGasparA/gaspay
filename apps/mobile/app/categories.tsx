@@ -37,7 +37,7 @@ export default function Categories() {
       contentContainerStyle={[styles.content, { paddingTop: insets.top + space.md }]}
     >
       <View style={styles.header}>
-        <Pressable onPress={() => router.back()} style={styles.backButton}>
+        <Pressable onPress={() => router.back()} style={styles.backButton} hitSlop={8}>
           <Text style={styles.backLabel}>‹</Text>
         </Pressable>
         <Text style={styles.title}>Categorias</Text>
@@ -51,6 +51,9 @@ export default function Categories() {
               key={k}
               onPress={() => setKind(k)}
               style={[styles.tab, active && styles.tabActive]}
+              accessibilityRole="radio"
+              accessibilityLabel={k === 'expense' ? 'Despesas' : 'Receitas'}
+              accessibilityState={{ selected: active }}
             >
               <Text style={[styles.tabLabel, active && styles.tabLabelActive]}>
                 {k === 'expense' ? 'Despesas' : 'Receitas'}

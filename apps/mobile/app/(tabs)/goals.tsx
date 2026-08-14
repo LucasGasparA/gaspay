@@ -1,4 +1,4 @@
-import { formatCents, lightTheme } from '@dindim/shared';
+import { formatCents, formatDayShort, fromDateOnly, lightTheme } from '@dindim/shared';
 import { Link, useRouter } from 'expo-router';
 import { ActivityIndicator, Pressable, ScrollView, StyleSheet, Text, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
@@ -46,7 +46,9 @@ export default function Goals() {
               >
                 <View style={styles.cardHeader}>
                   <Text style={styles.name}>{goal.name}</Text>
-                  <Text style={styles.deadline}>{goal.deadline ?? 'Sem prazo'}</Text>
+                  <Text style={styles.deadline}>
+                    {goal.deadline ? formatDayShort(fromDateOnly(goal.deadline)) : 'Sem prazo'}
+                  </Text>
                 </View>
                 <ProgressBar pct={pct} />
                 <View style={styles.cardFooter}>

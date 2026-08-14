@@ -71,6 +71,6 @@ const styles = StyleSheet.create({
     shadowOffset: { width: 0, height: 6 },
     elevation: 10,
   },
-  item: { flex: 1, alignItems: 'center', justifyContent: 'center', gap: 4, minHeight: 40 },
+  item: { flex: 1, alignItems: 'center', justifyContent: 'center', gap: 4, minHeight: 44 },
   label: {},
 });

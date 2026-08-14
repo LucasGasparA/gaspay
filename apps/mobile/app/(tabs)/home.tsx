@@ -52,10 +52,10 @@ export default function Home() {
     isRefetching: accountsRefetching,
     refetch: refetchAccounts,
   } = useAccounts();
-  const { data: monthSummary, refetch: refetchSummary } = useCurrentMonthFlow();
+  const { data: monthSummary, isLoading: monthSummaryLoading, refetch: refetchSummary } = useCurrentMonthFlow();
   const { data: recent, isLoading: recentLoading, refetch: refetchRecent } = useRecentTransactions(5);
   const currentMonth = monthStart(new Date());
-  const { data: budgetsData, refetch: refetchBudgets } = useBudgets(currentMonth);
+  const { data: budgetsData, isLoading: budgetsLoading, refetch: refetchBudgets } = useBudgets(currentMonth);
   const { data: flowData, refetch: refetchFlow } = useMonthlyFlow(6);
 
   const totalBalanceCents = useMemo(
@@ -144,7 +144,7 @@ export default function Home() {
               </Text>
               <Pressable
                 onPress={() => setBalanceHidden((prev) => !prev)}
-                hitSlop={8}
+                hitSlop={10}
                 style={styles.balanceToggle}
                 accessibilityRole="button"
                 accessibilityLabel={balanceHidden ? 'Mostrar saldo' : 'Ocultar saldo'}
@@ -159,17 +159,25 @@ export default function Home() {
             <View style={[styles.summaryRow, { gap: space.xl, marginTop: space.md }]}>
               <View>
                 <Text style={[styles.summaryLabel, { color: colors.textSecondary }]}>Entradas</Text>
-                <Text
-                  style={[styles.summaryValue, { color: colors.income, fontWeight: typography.weight.semibold }]}
-                >
-                  +{formatCents(monthSummary?.incomeCents ?? 0n)}
-                </Text>
+                {monthSummaryLoading ? (
+                  <ActivityIndicator color={colors.income} size="small" style={styles.summaryLoading} />
+                ) : (
+                  <Text
+                    style={[styles.summaryValue, { color: colors.income, fontWeight: typography.weight.semibold }]}
+                  >
+                    +{formatCents(monthSummary?.incomeCents ?? 0n)}
+                  </Text>
+                )}
               </View>
               <View>
                 <Text style={[styles.summaryLabel, { color: colors.textSecondary }]}>Saídas</Text>
-                <Text style={[styles.summaryValue, { color: colors.text, fontWeight: typography.weight.semibold }]}>
-                  {formatCents(monthSummary?.expenseCents ?? 0n)}
-                </Text>
+                {monthSummaryLoading ? (
+                  <ActivityIndicator color={colors.text} size="small" style={styles.summaryLoading} />
+                ) : (
+                  <Text style={[styles.summaryValue, { color: colors.text, fontWeight: typography.weight.semibold }]}>
+                    {formatCents(monthSummary?.expenseCents ?? 0n)}
+                  </Text>
+                )}
               </View>
             </View>
             {projectedExpenseCents !== null && (
@@ -214,7 +222,9 @@ export default function Home() {
             >
               Orçamentos do mês
             </Text>
-            {(budgetsData?.items ?? []).length === 0 ? (
+            {budgetsLoading ? (
+              <ActivityIndicator color={colors.brand} />
+            ) : (budgetsData?.items ?? []).length === 0 ? (
               <Text style={[styles.empty, { color: colors.textTertiary }]}>
                 Nenhum orçamento definido pra esse mês ainda.
               </Text>
@@ -291,6 +301,7 @@ const styles = StyleSheet.create({
   projection: { fontSize: 13 },
   summaryLabel: { fontSize: 12 },
   summaryValue: { fontSize: 15, marginTop: 2 },
+  summaryLoading: { alignSelf: 'flex-start', marginTop: 4 },
   card: { borderWidth: 1 },
   cardHeader: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'baseline' },
   cardTitle: { fontSize: 15 },

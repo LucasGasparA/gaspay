@@ -2,11 +2,13 @@ import { accountTypeLabels, accountTypes, lightTheme, type AccountType } from '@
 import { useRouter } from 'expo-router';
 import { useState } from 'react';
 import { ActivityIndicator, Pressable, ScrollView, StyleSheet, Text, TextInput, View } from 'react-native';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { AmountInput } from '../../components/AmountInput';
 import { FormGroup } from '../../components/FormGroup';
 import { FormRow } from '../../components/FormRow';
 import { PickerModal } from '../../components/PickerModal';
 import { useCreateAccount } from '../../hooks/use-accounts';
+import { ApiError } from '../../lib/api';
 
 const { colors, space, radius, typography } = lightTheme;
 
@@ -34,6 +36,7 @@ type PickerKind = 'type' | 'institution' | null;
 
 export default function NewAccount() {
   const router = useRouter();
+  const insets = useSafeAreaInsets();
   const createAccount = useCreateAccount();
 
   const [name, setName] = useState('');
@@ -70,14 +73,14 @@ export default function NewAccount() {
         color: institution?.color ?? null,
       });
       router.back();
-    } catch {
-      setError('Não consegui criar a conta. Tenta de novo.');
+    } catch (err) {
+      setError(err instanceof ApiError ? err.message : 'Não consegui criar a conta. Tenta de novo.');
     }
   }
 
   return (
     <View style={styles.container}>
-      <View style={styles.header}>
+      <View style={[styles.header, { paddingTop: insets.top + space.md }]}>
         <Text style={styles.title}>Nova conta</Text>
         <Pressable onPress={() => router.back()} style={styles.closeButton}>
           <Text style={styles.closeLabel}>✕</Text>
@@ -151,7 +154,6 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
     alignItems: 'center',
     paddingHorizontal: space.lg,
-    paddingTop: space.xl,
   },
   title: { fontSize: typography.size.title, fontWeight: typography.weight.semibold, color: colors.text },
   closeButton: { padding: space.xs },

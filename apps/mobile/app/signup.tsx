@@ -26,9 +26,14 @@ export default function SignUp() {
     setPending(true);
     void Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
     try {
-      await signInWithGoogle();
+      const result = await signInWithGoogle();
+      // Sem `result.error` e sem sessão: o usuário só cancelou o picker do
+      // Google — não é erro, não mostra mensagem nenhuma.
+      if (result.error) {
+        setError('Não consegui criar a conta. Verifique se este e-mail tem acesso liberado.');
+      }
     } catch {
-      setError('Não consegui criar a conta. Verifique se este e-mail tem acesso liberado.');
+      setError('Sem conexão. Verifique sua internet e tente de novo.');
     } finally {
       setPending(false);
     }

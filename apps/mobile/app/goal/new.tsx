@@ -2,8 +2,10 @@ import { lightTheme } from '@dindim/shared';
 import { useRouter } from 'expo-router';
 import { useState } from 'react';
 import { ActivityIndicator, Pressable, ScrollView, StyleSheet, Text, TextInput, View } from 'react-native';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { AmountInput } from '../../components/AmountInput';
 import { useCreateGoal } from '../../hooks/use-goals';
+import { ApiError } from '../../lib/api';
 
 const { colors, space, radius, typography } = lightTheme;
 
@@ -11,6 +13,7 @@ const DEADLINE_PATTERN = /^\d{4}-\d{2}-\d{2}$/;
 
 export default function NewGoal() {
   const router = useRouter();
+  const insets = useSafeAreaInsets();
   const createGoal = useCreateGoal();
 
   const [name, setName] = useState('');
@@ -40,14 +43,14 @@ export default function NewGoal() {
         deadline: deadline || null,
       });
       router.back();
-    } catch {
-      setError('Não consegui criar a meta. Tenta de novo.');
+    } catch (err) {
+      setError(err instanceof ApiError ? err.message : 'Não consegui criar a meta. Tenta de novo.');
     }
   }
 
   return (
     <View style={styles.container}>
-      <View style={styles.header}>
+      <View style={[styles.header, { paddingTop: insets.top + space.md }]}>
         <Text style={styles.title}>Nova meta</Text>
         <Pressable onPress={() => router.back()} style={styles.closeButton}>
           <Text style={styles.closeLabel}>✕</Text>
@@ -99,7 +102,6 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
     alignItems: 'center',
     paddingHorizontal: space.lg,
-    paddingTop: space.xl,
   },
   title: { fontSize: typography.size.title, fontWeight: typography.weight.semibold, color: colors.text },
   closeButton: { padding: space.xs },

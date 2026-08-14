@@ -92,6 +92,9 @@ export default function Transactions() {
               key={f.id}
               onPress={() => setFilter(f.id)}
               style={[styles.filterChip, active && styles.filterChipActive]}
+              accessibilityRole="radio"
+              accessibilityLabel={f.label}
+              accessibilityState={{ selected: active }}
             >
               <Text style={[styles.filterLabel, active && styles.filterLabelActive]}>{f.label}</Text>
             </Pressable>

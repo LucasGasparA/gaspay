@@ -4,6 +4,7 @@ import { useState } from 'react';
 import { ActivityIndicator, Pressable, ScrollView, StyleSheet, Text, TextInput, View } from 'react-native';
 import { useAccounts } from '../hooks/use-accounts';
 import { useCategories } from '../hooks/use-categories';
+import { ApiError } from '../lib/api';
 import { AmountInput } from './AmountInput';
 import { FormGroup } from './FormGroup';
 import { FormRow } from './FormRow';
@@ -94,8 +95,8 @@ export function TransactionForm({ initialValues, submitLabel, onSubmit, onDelete
         occurredAt: dateForOffset(dateOffset),
       });
       void Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success);
-    } catch {
-      setError('Não consegui salvar. Tenta de novo.');
+    } catch (err) {
+      setError(err instanceof ApiError ? err.message : 'Não consegui salvar. Tenta de novo.');
     } finally {
       setSubmitting(false);
     }

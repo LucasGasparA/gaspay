@@ -9,6 +9,7 @@ import { PhotoPickerModal } from '../../components/PhotoPickerModal';
 import { SettingRow } from '../../components/SettingRow';
 import { SettingsGroup } from '../../components/SettingsGroup';
 import { useMe } from '../../hooks/use-me';
+import { ApiError } from '../../lib/api';
 import { signOut } from '../../lib/auth-client';
 import { useBiometricPreference } from '../../lib/biometric-preference-context';
 import { useTheme } from '../../lib/theme-context';
@@ -23,6 +24,16 @@ export default function Profile() {
   const { enabled: biometricsEnabled, setEnabled: setBiometricsEnabled } = useBiometricPreference();
   const [editingName, setEditingName] = useState(false);
   const [pickingPhoto, setPickingPhoto] = useState(false);
+  const [signOutError, setSignOutError] = useState<string | null>(null);
+
+  async function handleSignOut() {
+    setSignOutError(null);
+    try {
+      await signOut();
+    } catch (err) {
+      setSignOutError(err instanceof ApiError ? err.message : 'Não consegui sair. Tenta de novo.');
+    }
+  }
 
   // Preferências ainda não têm backend — toggles são só locais por enquanto
   // (decisão explícita: manter Notificações como estão, ver DDM-6). Biometria
@@ -98,7 +109,9 @@ export default function Profile() {
         <SettingRow label="Categorias" onPress={() => router.push('/categories')} isLast />
       </SettingsGroup>
 
-      <Pressable style={styles.signOut} onPress={() => signOut()}>
+      {signOutError ? <Text style={styles.error}>{signOutError}</Text> : null}
+
+      <Pressable style={styles.signOut} onPress={() => void handleSignOut()}>
         <Text style={styles.signOutLabel}>Sair da conta</Text>
       </Pressable>
 
@@ -131,6 +144,12 @@ const styles = StyleSheet.create({
   name: { fontSize: 17, fontWeight: typography.weight.semibold, color: colors.text },
   email: { fontSize: typography.size.footnote, color: colors.textSecondary, marginTop: 2 },
   editLink: { fontSize: typography.size.footnote, fontWeight: typography.weight.medium, color: colors.brand },
+  error: {
+    color: colors.danger,
+    fontSize: typography.size.footnote,
+    marginBottom: space.sm,
+    textAlign: 'center',
+  },
   signOut: {
     marginTop: space.sm,
     textAlign: 'center',

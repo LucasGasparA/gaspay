@@ -30,9 +30,24 @@ export function hydrateAuthStorage(): Promise<void> {
 
 export const { useSession, signOut } = authClient;
 
-/** Abre o navegador no fluxo do Google; o servidor cuida do resto. */
-export function signInWithGoogle(): Promise<unknown> {
-  return authClient.signIn.social({ provider: 'google', callbackURL: '/' });
+export interface SignInResult {
+  /**
+   * `null` tanto em sucesso quanto quando o usuário só cancelou o picker do
+   * Google (o cliente Expo do Better Auth trata isso como não-erro, sem
+   * lançar exceção) — só vem preenchido numa falha real do próprio pedido de
+   * login (ex.: servidor fora do ar). Rejeição por allowlist acontece depois,
+   * no callback do OAuth, e não chega até aqui.
+   */
+  error: { message?: string } | null;
+}
+
+/**
+ * Abre o navegador no fluxo do Google; o servidor cuida do resto. Não lança
+ * exceção para falha de login em si (ver `SignInResult.error`) — só uma
+ * falha de rede de verdade (ex.: sem internet) rejeita a promise.
+ */
+export function signInWithGoogle(): Promise<SignInResult> {
+  return authClient.signIn.social({ provider: 'google', callbackURL: '/' }) as Promise<SignInResult>;
 }
 
 interface ExpoClientActions {

@@ -38,7 +38,7 @@ export function PickerModal({ visible, title, options, selectedId, onSelect, onC
                 }}
               >
                 {option.color ? <View style={[styles.dot, { backgroundColor: option.color }]} /> : null}
-                <Text style={styles.optionLabel}>{option.label}</Text>
+                <Text style={[styles.optionLabel, selected && styles.optionLabelSelected]}>{option.label}</Text>
               </Pressable>
             );
           })}
@@ -69,10 +69,18 @@ const styles = StyleSheet.create({
     marginBottom: space.sm,
   },
   list: { flexGrow: 0 },
-  option: { flexDirection: 'row', alignItems: 'center', gap: space.sm, paddingVertical: space.sm },
-  optionSelected: {},
+  option: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: space.sm,
+    paddingVertical: space.sm,
+    paddingHorizontal: space.sm,
+    borderRadius: radius.md,
+  },
+  optionSelected: { backgroundColor: colors.brandSubtle },
   dot: { width: 10, height: 10, borderRadius: radius.pill },
   optionLabel: { fontSize: typography.size.body, color: colors.text },
+  optionLabelSelected: { color: colors.brand, fontWeight: typography.weight.semibold },
   empty: { fontSize: typography.size.body, color: colors.textTertiary, paddingVertical: space.sm },
   cancelButton: { marginTop: space.sm, alignItems: 'center', paddingVertical: space.sm },
   cancelLabel: { color: colors.textSecondary, fontSize: typography.size.body },

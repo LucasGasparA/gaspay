@@ -10,6 +10,7 @@ import { Fab } from '../../components/Fab';
 import { FlowChart } from '../../components/FlowChart';
 import { ProgressBar } from '../../components/ProgressBar';
 import { TransactionRow } from '../../components/TransactionRow';
+import { Wordmark } from '../../components/Wordmark';
 import { useAccounts } from '../../hooks/use-accounts';
 import { useCurrentMonthFlow, useMonthlyFlow } from '../../hooks/use-analytics';
 import { useBudgets } from '../../hooks/use-budgets';
@@ -105,7 +106,13 @@ export default function Home() {
       >
       <View style={styles.greetingRow}>
         <View>
-          <Text style={[styles.greeting, { color: colors.text, fontWeight: typography.weight.semibold }]}>
+          <Wordmark size={20} theme={theme} />
+          <Text
+            style={[
+              styles.greeting,
+              { color: colors.text, fontWeight: typography.weight.semibold, marginTop: 6 },
+            ]}
+          >
             Oi, {me?.user.name.split(' ')[0] ?? '...'}
           </Text>
           <Text style={[styles.date, { color: colors.textSecondary }]}>{todayLabel()}</Text>

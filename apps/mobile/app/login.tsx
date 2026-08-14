@@ -4,8 +4,8 @@ import * as Haptics from 'expo-haptics';
 import { useState } from 'react';
 import { StyleSheet, Text, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
-import { Logo } from '../components/Logo';
 import { PrimaryButton } from '../components/PrimaryButton';
+import { Wordmark } from '../components/Wordmark';
 import { signInWithGoogle } from '../lib/auth-client';
 
 const { colors, space, typography } = lightTheme;
@@ -44,7 +44,7 @@ export default function Login() {
     <View style={styles.container}>
       <View style={[styles.header, { paddingTop: insets.top + space.lg }]}>
         <View style={styles.logo}>
-          <Logo size={56} />
+          <Wordmark onBrand />
         </View>
         <Text style={styles.title}>
           Oi, bem-vinda{'\n'}de volta

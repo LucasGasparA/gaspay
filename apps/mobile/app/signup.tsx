@@ -5,6 +5,7 @@ import { useState } from 'react';
 import { Pressable, StyleSheet, Text, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { PrimaryButton } from '../components/PrimaryButton';
+import { Wordmark } from '../components/Wordmark';
 import { signInWithGoogle } from '../lib/auth-client';
 
 const { colors, space, typography } = lightTheme;
@@ -51,6 +52,9 @@ export default function SignUp() {
         >
           <Text style={styles.backLabel}>‹</Text>
         </Pressable>
+        <View style={styles.logo}>
+          <Wordmark onBrand />
+        </View>
         <Text style={styles.title}>Criar conta</Text>
         <Text style={styles.subtitle}>Leva menos de um minuto.</Text>
       </View>
@@ -89,6 +93,7 @@ const styles = StyleSheet.create({
     marginBottom: space.lg,
   },
   backLabel: { fontSize: 15, color: colors.brand },
+  logo: { marginBottom: space.lg },
   title: { fontSize: 26, fontWeight: typography.weight.semibold, color: colors.onBrand, lineHeight: 32.5 },
   subtitle: { fontSize: 14, color: colors.onBrand, opacity: 0.85, marginTop: 4 },
   sheet: {

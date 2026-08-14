@@ -3,6 +3,7 @@ import { Pressable, StyleSheet, Text, View } from 'react-native';
 import { useAppLock } from '../hooks/use-app-lock';
 import { useMe } from '../hooks/use-me';
 import { signOut } from '../lib/auth-client';
+import { Logo } from './Logo';
 
 const { colors, space, radius, typography } = lightTheme;
 
@@ -34,6 +35,7 @@ export function BiometricGate({ enabled, children }: BiometricGateProps) {
   return (
     <View style={StyleSheet.absoluteFill}>
       <View style={styles.center}>
+        <Logo size={24} />
         <View style={styles.avatar}>
           <Text style={styles.avatarLabel}>{me ? initials(me.user.name) : ''}</Text>
         </View>

@@ -3,22 +3,15 @@
 // react-navigation, vendorizado; ver `node_modules/expo-router/build/react-navigation/bottom-tabs`).
 import type { BottomTabBarProps } from 'expo-router/build/react-navigation/bottom-tabs/types';
 import { Pressable, StyleSheet, Text, View } from 'react-native';
-import { useScrollActivity } from '../lib/scroll-activity-context';
 import { useTheme } from '../lib/theme-context';
 
 /** Rota que existe no grupo (tabs) mas não aparece na barra — ver DDM-9. */
 const HIDDEN_ROUTES = new Set(['profile']);
 
-/**
- * Barra flutuante: cantos arredondados, margem das bordas, sombra — nunca
- * some durante o scroll, mas o rótulo das abas inativas colapsa enquanto a
- * pessoa está rolando a tela (ver DDM-10). A aba ativa sempre mantém o
- * rótulo, pra nunca ficar sem indicação nenhuma de onde está.
- */
+/** Barra flutuante: cantos arredondados, margem das bordas, sombra. */
 export function FloatingTabBar({ state, descriptors, navigation, insets }: BottomTabBarProps) {
   const { theme } = useTheme();
   const { colors, typography, radius } = theme;
-  const { isScrolling } = useScrollActivity();
 
   const routes = state.routes.filter((route) => !HIDDEN_ROUTES.has(route.name));
 
@@ -30,7 +23,6 @@ export function FloatingTabBar({ state, descriptors, navigation, insets }: Botto
           const { options } = descriptors[route.key] ?? {};
           const focused = state.index === index;
           const label = options?.title ?? route.name;
-          const showLabel = focused || !isScrolling;
           const color = focused ? colors.brand : colors.textTertiary;
 
           function onPress() {
@@ -50,17 +42,15 @@ export function FloatingTabBar({ state, descriptors, navigation, insets }: Botto
               accessibilityLabel={options?.tabBarAccessibilityLabel ?? label}
             >
               {options?.tabBarIcon?.({ focused, color, size: 22 })}
-              {showLabel ? (
-                <Text
-                  numberOfLines={1}
-                  style={[
-                    styles.label,
-                    { fontSize: typography.size.caption, color, fontWeight: focused ? typography.weight.semibold : typography.weight.regular },
-                  ]}
-                >
-                  {label}
-                </Text>
-              ) : null}
+              <Text
+                numberOfLines={1}
+                style={[
+                  styles.label,
+                  { fontSize: typography.size.caption, color, fontWeight: focused ? typography.weight.semibold : typography.weight.regular },
+                ]}
+              >
+                {label}
+              </Text>
             </Pressable>
           );
         })}

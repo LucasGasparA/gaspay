@@ -5,10 +5,12 @@ import { Pressable, ScrollView, StyleSheet, Text, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { Avatar } from '../../components/Avatar';
 import { EditNameModal } from '../../components/EditNameModal';
+import { PhotoPickerModal } from '../../components/PhotoPickerModal';
 import { SettingRow } from '../../components/SettingRow';
 import { SettingsGroup } from '../../components/SettingsGroup';
 import { useMe } from '../../hooks/use-me';
 import { signOut } from '../../lib/auth-client';
+import { useBiometricPreference } from '../../lib/biometric-preference-context';
 import { useTheme } from '../../lib/theme-context';
 
 const { colors, space, radius, typography } = lightTheme;
@@ -18,14 +20,16 @@ export default function Profile() {
   const router = useRouter();
   const { data: me } = useMe();
   const { isDark, setDark } = useTheme();
+  const { enabled: biometricsEnabled, setEnabled: setBiometricsEnabled } = useBiometricPreference();
   const [editingName, setEditingName] = useState(false);
+  const [pickingPhoto, setPickingPhoto] = useState(false);
 
   // Preferências ainda não têm backend — toggles são só locais por enquanto
-  // (decisão explícita: manter Notificações/Segurança como estão, ver DDM-6).
+  // (decisão explícita: manter Notificações como estão, ver DDM-6). Biometria
+  // é a exceção: persiste no SecureStore via `useBiometricPreference`.
   const [budgetAlerts, setBudgetAlerts] = useState(true);
   const [weeklySummary, setWeeklySummary] = useState(true);
   const [billReminder, setBillReminder] = useState(false);
-  const [biometrics, setBiometrics] = useState(true);
 
   return (
     <ScrollView
@@ -35,7 +39,13 @@ export default function Profile() {
       <Text style={styles.title}>Perfil</Text>
 
       <View style={styles.profileCard}>
-        <Avatar name={me?.user.name ?? ''} imageUrl={me?.user.image} size={56} />
+        <Pressable
+          onPress={() => setPickingPhoto(true)}
+          accessibilityRole="button"
+          accessibilityLabel="Trocar foto do perfil"
+        >
+          <Avatar name={me?.user.name ?? ''} imageUrl={me?.user.image} size={56} />
+        </Pressable>
         <View style={styles.profileInfo}>
           <Text style={styles.name}>{me?.user.name ?? '...'}</Text>
           <Text style={styles.email}>{me?.user.email ?? ''}</Text>
@@ -74,7 +84,12 @@ export default function Profile() {
       </SettingsGroup>
 
       <SettingsGroup title="Segurança">
-        <SettingRow label="Biometria para abrir o app" toggle on={biometrics} onToggle={setBiometrics} />
+        <SettingRow
+          label="Biometria para abrir o app"
+          toggle
+          on={biometricsEnabled}
+          onToggle={setBiometricsEnabled}
+        />
         <SettingRow label="Alterar senha" />
         <SettingRow label="Exportar meus dados" value="CSV" isLast />
       </SettingsGroup>
@@ -92,6 +107,7 @@ export default function Profile() {
         currentName={me?.user.name ?? ''}
         onClose={() => setEditingName(false)}
       />
+      <PhotoPickerModal visible={pickingPhoto} onClose={() => setPickingPhoto(false)} />
     </ScrollView>
   );
 }

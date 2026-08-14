@@ -27,7 +27,7 @@ export function SettingRow({ label, hint, value, toggle, on = false, onToggle, o
       ) : (
         <View style={styles.valueGroup}>
           {value ? <Text style={styles.value}>{value}</Text> : null}
-          <Text style={styles.chevron}>›</Text>
+          {onPress ? <Text style={styles.chevron}>›</Text> : null}
         </View>
       )}
     </View>

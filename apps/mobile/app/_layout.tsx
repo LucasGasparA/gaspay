@@ -9,6 +9,7 @@ import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
 import { BiometricGate } from '../components/BiometricGate';
 import { hydrateAuthStorage, useSession } from '../lib/auth-client';
+import { BiometricPreferenceProvider, useBiometricPreference } from '../lib/biometric-preference-context';
 import { queryClient } from '../lib/query-client';
 import { ThemeProvider } from '../lib/theme-context';
 
@@ -27,8 +28,9 @@ function AuthenticatedRoot() {
     InterTight_600SemiBold,
   });
   const { data: session, isPending: sessionPending } = useSession();
+  const { enabled: biometricsEnabled, ready: biometricsReady } = useBiometricPreference();
 
-  const ready = fontsLoaded && !sessionPending;
+  const ready = fontsLoaded && !sessionPending && biometricsReady;
 
   useEffect(() => {
     if (ready) SplashScreen.hideAsync().catch(() => undefined);
@@ -39,7 +41,7 @@ function AuthenticatedRoot() {
   return (
     <QueryClientProvider client={queryClient}>
       <ThemeProvider>
-        <BiometricGate enabled={Boolean(session)}>
+        <BiometricGate enabled={Boolean(session) && biometricsEnabled}>
           <Stack
             screenOptions={{
               headerShown: false,
@@ -63,7 +65,9 @@ export default function RootLayout() {
 
   return (
     <GestureHandlerRootView style={{ flex: 1 }}>
-      <SafeAreaProvider>{storageHydrated ? <AuthenticatedRoot /> : null}</SafeAreaProvider>
+      <SafeAreaProvider>
+        <BiometricPreferenceProvider>{storageHydrated ? <AuthenticatedRoot /> : null}</BiometricPreferenceProvider>
+      </SafeAreaProvider>
     </GestureHandlerRootView>
   );
 }

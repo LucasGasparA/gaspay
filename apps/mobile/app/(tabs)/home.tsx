@@ -15,7 +15,6 @@ import { useMonthlyFlow } from '../../hooks/use-analytics';
 import { useBudgets } from '../../hooks/use-budgets';
 import { useMe } from '../../hooks/use-me';
 import { useMonthSummary, useRecentTransactions } from '../../hooks/use-transactions';
-import { useScrollActivityHandler } from '../../lib/scroll-activity-context';
 import { useTheme } from '../../lib/theme-context';
 
 const WEEKDAYS_FULL = [
@@ -47,7 +46,6 @@ export default function Home() {
   const { theme } = useTheme();
   const { colors, space, radius, typography } = theme;
   const { data: me } = useMe();
-  const scrollActivity = useScrollActivityHandler();
   const {
     data: accountsData,
     isLoading: accountsLoading,
@@ -104,7 +102,6 @@ export default function Home() {
           { paddingHorizontal: space.lg, paddingBottom: space.xl, gap: space.xl, paddingTop: insets.top + space.md },
         ]}
         refreshControl={<RefreshControl refreshing={accountsRefetching} onRefresh={handleRefresh} />}
-        {...scrollActivity}
       >
       <View style={styles.greetingRow}>
         <View>

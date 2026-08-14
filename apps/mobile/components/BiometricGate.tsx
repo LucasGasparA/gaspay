@@ -46,7 +46,6 @@ export function BiometricGate({ enabled, children }: BiometricGateProps) {
         </Pressable>
       </View>
       <View style={styles.footer}>
-        <Text style={styles.usePassword}>Usar senha</Text>
         <Pressable onPress={() => void signOut()} hitSlop={8}>
           <Text style={styles.switchAccount}>Trocar de conta</Text>
         </Pressable>
@@ -114,6 +113,5 @@ const styles = StyleSheet.create({
     paddingBottom: space.xl,
     gap: space.md,
   },
-  usePassword: { textAlign: 'center', fontSize: 14, fontWeight: typography.weight.medium, color: colors.brand },
   switchAccount: { textAlign: 'center', fontSize: 13, color: colors.textSecondary },
 });

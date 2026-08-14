@@ -47,6 +47,15 @@ const config: ExpoConfig = {
         faceIDPermission: 'Usar biometria para destravar o app.',
       },
     ],
+    [
+      'expo-image-picker',
+      {
+        photosPermission: 'Usar suas fotos para a foto de perfil.',
+        cameraPermission: 'Usar a câmera para tirar uma foto de perfil.',
+        // O app nunca grava áudio — sem motivo pra pedir microfone.
+        microphonePermission: false,
+      },
+    ],
     // Ver o arquivo: contorna um bug de toolchain do NDK 27 + CMake 3.22.1
     // que faz o build nativo do Android falhar/crashar sem isso.
     './plugins/withAndroidCxxSharedLink.js',

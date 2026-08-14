@@ -16,7 +16,6 @@ import { EmptyState } from '../../components/EmptyState';
 import { Fab } from '../../components/Fab';
 import { TransactionRow } from '../../components/TransactionRow';
 import { useTransactions } from '../../hooks/use-transactions';
-import { useScrollActivityHandler } from '../../lib/scroll-activity-context';
 
 const { colors, space, radius, typography } = lightTheme;
 
@@ -55,7 +54,6 @@ function groupByDay(transactions: TransactionDTO[]): Section[] {
 export default function Transactions() {
   const insets = useSafeAreaInsets();
   const router = useRouter();
-  const scrollActivity = useScrollActivityHandler();
   const [filter, setFilter] = useState<Filter>('all');
   const [searchInput, setSearchInput] = useState('');
   const [search, setSearch] = useState('');
@@ -114,7 +112,6 @@ export default function Transactions() {
           renderSectionFooter={() => <View style={styles.sectionFooter} />}
           contentContainerStyle={styles.listContent}
           refreshControl={<RefreshControl refreshing={isRefetching} onRefresh={() => void refetch()} />}
-          {...scrollActivity}
           onEndReachedThreshold={0.4}
           onEndReached={() => {
             if (hasNextPage) void fetchNextPage();

@@ -5,14 +5,12 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { EmptyState } from '../../components/EmptyState';
 import { ProgressBar } from '../../components/ProgressBar';
 import { useDeleteGoal, useGoals } from '../../hooks/use-goals';
-import { useScrollActivityHandler } from '../../lib/scroll-activity-context';
 
 const { colors, space, radius, typography } = lightTheme;
 
 export default function Goals() {
   const insets = useSafeAreaInsets();
   const router = useRouter();
-  const scrollActivity = useScrollActivityHandler();
   const { data, isLoading } = useGoals();
   const deleteGoal = useDeleteGoal();
   const goals = data?.items ?? [];
@@ -21,7 +19,6 @@ export default function Goals() {
     <ScrollView
       style={styles.container}
       contentContainerStyle={[styles.content, { paddingTop: insets.top + space.md }]}
-      {...scrollActivity}
     >
       <Text style={styles.title}>Metas</Text>
 

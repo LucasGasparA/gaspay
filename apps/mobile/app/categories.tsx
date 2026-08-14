@@ -1,5 +1,5 @@
 import { lightTheme, monthStart } from '@dindim/shared';
-import { useRouter } from 'expo-router';
+import { Link, useRouter } from 'expo-router';
 import { useMemo, useState } from 'react';
 import { ActivityIndicator, Pressable, ScrollView, StyleSheet, Text, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
@@ -72,19 +72,26 @@ export default function Categories() {
       ) : (
         <View style={styles.list}>
           {categories.map((category, index) => (
-            <View
+            <Pressable
               key={category.id}
               style={[styles.row, index !== categories.length - 1 && styles.rowBorder]}
+              onPress={() => router.push(`/category/${category.id}`)}
+              accessibilityRole="button"
+              accessibilityLabel={`${category.name}, toque para editar`}
             >
               <Badge letter={category.name.charAt(0).toUpperCase()} color={category.color} />
               <Text style={styles.rowName}>{category.name}</Text>
               <Text style={styles.chevron}>›</Text>
-            </View>
+            </Pressable>
           ))}
         </View>
       )}
 
-      <Text style={styles.newCategory}>+ Nova categoria</Text>
+      <Link href="/category/new" asChild>
+        <Text style={styles.newCategory} accessibilityRole="button" accessibilityLabel="Nova categoria">
+          + Nova categoria
+        </Text>
+      </Link>
     </ScrollView>
   );
 }

@@ -4,6 +4,7 @@ import * as Haptics from 'expo-haptics';
 import { useState } from 'react';
 import { StyleSheet, Text, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
+import { Logo } from '../components/Logo';
 import { PrimaryButton } from '../components/PrimaryButton';
 import { signInWithGoogle } from '../lib/auth-client';
 
@@ -38,7 +39,7 @@ export default function Login() {
     <View style={styles.container}>
       <View style={[styles.header, { paddingTop: insets.top + space.lg }]}>
         <View style={styles.logo}>
-          <Text style={styles.logoLetter}>D</Text>
+          <Logo size={56} />
         </View>
         <Text style={styles.title}>
           Oi, bem-vinda{'\n'}de volta
@@ -72,16 +73,7 @@ export default function Login() {
 const styles = StyleSheet.create({
   container: { flex: 1, backgroundColor: colors.brand },
   header: { paddingHorizontal: space.lg, paddingBottom: space.xl },
-  logo: {
-    width: 40,
-    height: 40,
-    borderRadius: 12,
-    backgroundColor: colors.onBrand,
-    alignItems: 'center',
-    justifyContent: 'center',
-    marginBottom: space.lg,
-  },
-  logoLetter: { fontSize: 18, fontWeight: typography.weight.semibold, color: colors.brand },
+  logo: { marginBottom: space.lg },
   title: { fontSize: 26, fontWeight: typography.weight.semibold, color: colors.onBrand, lineHeight: 32.5 },
   sheet: {
     flex: 1,

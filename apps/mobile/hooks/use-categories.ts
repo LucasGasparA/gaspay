@@ -40,3 +40,12 @@ export function useUpdateCategory(id: string) {
     onSuccess: () => void queryClient.invalidateQueries({ queryKey: categoriesKey }),
   });
 }
+
+export function useDeleteCategory() {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: ({ id, force }: { id: string; force?: boolean }) =>
+      apiFetch<void>(`/api/categories/${id}${force ? '?force=true' : ''}`, { method: 'DELETE' }),
+    onSuccess: () => void queryClient.invalidateQueries({ queryKey: categoriesKey }),
+  });
+}

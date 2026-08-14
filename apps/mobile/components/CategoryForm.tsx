@@ -22,9 +22,10 @@ interface CategoryFormProps {
   initialValues?: Partial<CategoryFormValues>;
   submitLabel: string;
   onSubmit: (values: CategoryFormValues) => Promise<void>;
+  onDelete?: () => Promise<void>;
 }
 
-export function CategoryForm({ initialValues, submitLabel, onSubmit }: CategoryFormProps) {
+export function CategoryForm({ initialValues, submitLabel, onSubmit, onDelete }: CategoryFormProps) {
   const [name, setName] = useState(initialValues?.name ?? '');
   const [kind, setKind] = useState<CategoryKind>(initialValues?.kind ?? 'expense');
   const [color, setColor] = useState(initialValues?.color ?? accentPalette[0]);
@@ -52,6 +53,18 @@ export function CategoryForm({ initialValues, submitLabel, onSubmit }: CategoryF
       void Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success);
     } catch {
       setError('Não consegui salvar. Tenta de novo.');
+    } finally {
+      setSubmitting(false);
+    }
+  }
+
+  async function handleDelete() {
+    if (!onDelete) return;
+    setSubmitting(true);
+    try {
+      await onDelete();
+    } catch {
+      setError('Não consegui excluir. Tenta de novo.');
     } finally {
       setSubmitting(false);
     }
@@ -110,6 +123,18 @@ export function CategoryForm({ initialValues, submitLabel, onSubmit }: CategoryF
           <Text style={styles.submitLabel}>{submitLabel}</Text>
         )}
       </Pressable>
+
+      {onDelete ? (
+        <Pressable
+          style={styles.deleteButton}
+          onPress={() => void handleDelete()}
+          disabled={submitting}
+          accessibilityRole="button"
+          accessibilityLabel="Excluir categoria"
+        >
+          <Text style={styles.deleteLabel}>Excluir categoria</Text>
+        </Pressable>
+      ) : null}
 
       <PickerModal
         visible={openColorPicker}
@@ -170,4 +195,6 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   submitLabel: { color: colors.onBrand, fontSize: typography.size.callout, fontWeight: typography.weight.medium },
+  deleteButton: { marginTop: space.md, alignItems: 'center', paddingVertical: space.sm },
+  deleteLabel: { color: colors.danger, fontSize: typography.size.body },
 });

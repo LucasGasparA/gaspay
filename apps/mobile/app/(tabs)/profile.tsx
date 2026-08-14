@@ -8,6 +8,7 @@ import { EditNameModal } from '../../components/EditNameModal';
 import { PhotoPickerModal } from '../../components/PhotoPickerModal';
 import { SettingRow } from '../../components/SettingRow';
 import { SettingsGroup } from '../../components/SettingsGroup';
+import { useAccounts } from '../../hooks/use-accounts';
 import { useMe } from '../../hooks/use-me';
 import { ApiError } from '../../lib/api';
 import { signOut } from '../../lib/auth-client';
@@ -20,6 +21,8 @@ export default function Profile() {
   const insets = useSafeAreaInsets();
   const router = useRouter();
   const { data: me } = useMe();
+  const { data: accountsData } = useAccounts();
+  const accountCount = accountsData?.items.length ?? 0;
   const { isDark, setDark } = useTheme();
   const { enabled: biometricsEnabled, setEnabled: setBiometricsEnabled } = useBiometricPreference();
   const [editingName, setEditingName] = useState(false);
@@ -67,7 +70,11 @@ export default function Profile() {
       </View>
 
       <SettingsGroup title="Conta">
-        <SettingRow label="Contas conectadas" value="3 bancos" isLast />
+        <SettingRow
+          label="Contas conectadas"
+          value={`${accountCount} ${accountCount === 1 ? 'banco' : 'bancos'}`}
+          isLast
+        />
       </SettingsGroup>
 
       <SettingsGroup title="Preferências">
@@ -100,9 +107,8 @@ export default function Profile() {
           toggle
           on={biometricsEnabled}
           onToggle={setBiometricsEnabled}
+          isLast
         />
-        <SettingRow label="Alterar senha" />
-        <SettingRow label="Exportar meus dados" value="CSV" isLast />
       </SettingsGroup>
 
       <SettingsGroup title="Organização">

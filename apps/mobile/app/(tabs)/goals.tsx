@@ -1,6 +1,6 @@
 import { formatCents, formatDayShort, fromDateOnly, lightTheme } from '@dindim/shared';
 import { Link, useRouter } from 'expo-router';
-import { ActivityIndicator, Pressable, ScrollView, StyleSheet, Text, View } from 'react-native';
+import { ActivityIndicator, Alert, Pressable, ScrollView, StyleSheet, Text, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { EmptyState } from '../../components/EmptyState';
 import { ProgressBar } from '../../components/ProgressBar';
@@ -14,6 +14,13 @@ export default function Goals() {
   const { data, isLoading } = useGoals();
   const deleteGoal = useDeleteGoal();
   const goals = data?.items ?? [];
+
+  function confirmDelete(goalId: string, goalName: string) {
+    Alert.alert('Excluir meta', `Tem certeza que quer excluir "${goalName}"? Essa ação não pode ser desfeita.`, [
+      { text: 'Cancelar', style: 'cancel' },
+      { text: 'Excluir', style: 'destructive', onPress: () => void deleteGoal.mutateAsync(goalId) },
+    ]);
+  }
 
   return (
     <ScrollView
@@ -42,7 +49,10 @@ export default function Goals() {
               <Pressable
                 key={goal.id}
                 style={styles.card}
-                onLongPress={() => void deleteGoal.mutateAsync(goal.id)}
+                onLongPress={() => confirmDelete(goal.id, goal.name)}
+                accessibilityRole="button"
+                accessibilityLabel={`Meta: ${goal.name}`}
+                accessibilityHint="Toque e segure para excluir"
               >
                 <View style={styles.cardHeader}>
                   <Text style={styles.name}>{goal.name}</Text>

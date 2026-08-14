@@ -1,5 +1,8 @@
 # Build de dentro do monorepo (contexto = raiz do repo, não apps/api) porque
 # a API depende de @dindim/shared via workspace:*.
+#
+# Usado pelo Railway via railway.json (builder=DOCKERFILE) na raiz — o watch
+# path do serviço é /apps/api/**, então mudanças só aqui disparam rebuild.
 
 FROM node:22-bookworm-slim AS base
 RUN corepack enable

@@ -11,10 +11,10 @@ import { FlowChart } from '../../components/FlowChart';
 import { ProgressBar } from '../../components/ProgressBar';
 import { TransactionRow } from '../../components/TransactionRow';
 import { useAccounts } from '../../hooks/use-accounts';
-import { useMonthlyFlow } from '../../hooks/use-analytics';
+import { useCurrentMonthFlow, useMonthlyFlow } from '../../hooks/use-analytics';
 import { useBudgets } from '../../hooks/use-budgets';
 import { useMe } from '../../hooks/use-me';
-import { useMonthSummary, useRecentTransactions } from '../../hooks/use-transactions';
+import { useRecentTransactions } from '../../hooks/use-transactions';
 import { useTheme } from '../../lib/theme-context';
 
 const WEEKDAYS_FULL = [
@@ -52,7 +52,7 @@ export default function Home() {
     isRefetching: accountsRefetching,
     refetch: refetchAccounts,
   } = useAccounts();
-  const { data: monthSummary, refetch: refetchSummary } = useMonthSummary();
+  const { data: monthSummary, refetch: refetchSummary } = useCurrentMonthFlow();
   const { data: recent, isLoading: recentLoading, refetch: refetchRecent } = useRecentTransactions(5);
   const currentMonth = monthStart(new Date());
   const { data: budgetsData, refetch: refetchBudgets } = useBudgets(currentMonth);

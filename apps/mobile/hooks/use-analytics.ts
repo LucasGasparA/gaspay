@@ -44,3 +44,27 @@ export function useMonthlyFlow(months = 6) {
     },
   });
 }
+
+export interface CurrentMonthFlow {
+  incomeCents: bigint;
+  expenseCents: bigint;
+}
+
+/**
+ * Entradas/saídas só do mês corrente, do mesmo `/monthly-flow` que já
+ * alimenta o gráfico "Últimos 6 meses" — soma no Postgres, sem o limite de
+ * 100 lançamentos que o antigo `useMonthSummary` (client-side, removido)
+ * tinha. `FlowChartPoint` já converteu os centavos pra `number`; a Home
+ * precisa de `bigint` pra `formatCents`, então converte de volta aqui.
+ */
+export function useCurrentMonthFlow() {
+  const query = useMonthlyFlow(1);
+  const point = query.data?.[0];
+
+  return {
+    ...query,
+    data: point
+      ? { incomeCents: BigInt(Math.round(point.incomeCents)), expenseCents: BigInt(Math.round(point.expenseCents)) }
+      : undefined,
+  };
+}

@@ -1,4 +1,4 @@
-import { startOfMonth, type TransactionDTO } from '@dindim/shared';
+import type { TransactionDTO } from '@dindim/shared';
 import { useInfiniteQuery, useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { apiFetch } from '../lib/api';
 import { accountsKey } from './use-accounts';
@@ -38,39 +38,6 @@ export function useRecentTransactions(limit: number) {
   return useQuery({
     queryKey: [...transactionsKey, 'recent', limit] as const,
     queryFn: () => apiFetch<TransactionsPage>(`/api/transactions?limit=${limit}`),
-  });
-}
-
-export interface MonthSummary {
-  incomeCents: bigint;
-  expenseCents: bigint;
-}
-
-/**
- * Soma entradas/saídas do mês corrente lendo direto da API (`from`/`to` já
- * existem no schema de listagem) — sem endpoint agregado dedicado, mas ainda
- * assim dado real, não mockado. Só cobre até 100 lançamentos no mês; acima
- * disso a soma fica parcial (uso pessoal raramente chega lá).
- */
-export function useMonthSummary() {
-  const from = startOfMonth(new Date()).toISOString();
-
-  return useQuery({
-    queryKey: [...transactionsKey, 'month-summary', from] as const,
-    queryFn: async (): Promise<MonthSummary> => {
-      const page = await apiFetch<TransactionsPage>(
-        `/api/transactions?from=${encodeURIComponent(from)}&limit=100`,
-      );
-
-      let incomeCents = 0n;
-      let expenseCents = 0n;
-      for (const transaction of page.items) {
-        if (transaction.kind === 'income') incomeCents += BigInt(transaction.amountCents);
-        else if (transaction.kind === 'expense') expenseCents += BigInt(transaction.amountCents);
-      }
-
-      return { incomeCents, expenseCents };
-    },
   });
 }
 
